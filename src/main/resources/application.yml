@@ -1,0 +1,28 @@
+
+spring:
+  aplication:
+    name: Gymlog
+
+
+  datasource:
+    username: postgres
+    password: root
+    url: jdbc:postgresql://localhost:5432/gymlog
+    driver-class-name: org.postgresql.Driver
+
+
+
+  jpa:
+    show-sql: true
+
+
+  flyway:
+    enabled: true
+
+
+  springdoc:
+    api-docs:
+      path: /api/api-docs
+    swagger-ui:
+    path: /swagger/index.html
+
