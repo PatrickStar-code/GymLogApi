@@ -3,6 +3,7 @@ package com.Gymlog.Entity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @Entity
 @Table(name = "food")
@@ -23,19 +25,22 @@ public class FoodEntity {
     private String foodName;
 
     @Column(nullable = false)
-    private int calories;
+    private double calories;
 
     @Column(nullable = false)
-    private int proteins;
+    private double proteins;
 
     @Column(nullable = false)
-    private int carbs;
+    private double carbs;
 
     @Column(nullable = false)
-    private int fibers;
+    private double fibers;
 
     @Column(nullable = false)
-    private int fats;
+    private double fats;
+
+    @Column(nullable = false)
+    private double grams;
 
     @OneToMany(mappedBy = "food")
     private Set<MealItemEntity> mealItems;

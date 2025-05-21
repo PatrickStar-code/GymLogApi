@@ -1,6 +1,6 @@
 CREATE TABLE meal_item (
     meal_item_id SERIAL  PRIMARY KEY,
-    quantity INT NOT NULL,
+    quantity NUMERIC NOT NULL,
     food_id BIGINT,
     meal_id BIGINT,
     CONSTRAINT fk_mealitem_food FOREIGN KEY (food_id) REFERENCES food(food_id),
