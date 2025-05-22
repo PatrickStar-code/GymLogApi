@@ -5,6 +5,9 @@ import com.Gymlog.Controllers.Response.FoodResponse;
 import com.Gymlog.Entity.FoodEntity;
 import com.Gymlog.Repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -52,5 +55,9 @@ public class FoodService {
 
     public void deleteFood(long id) {
         foodRepository.deleteById(id);
+    }
+
+    public Page<FoodEntity> getAllFoodsByPage(int page, int size) {
+        return foodRepository.findAll(PageRequest.of(page, size));
     }
 }

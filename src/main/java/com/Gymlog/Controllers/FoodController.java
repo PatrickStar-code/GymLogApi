@@ -9,6 +9,7 @@ import com.Gymlog.Service.FoodService;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class FoodController {
     private final FoodService foodService;
 
     @GetMapping("/")
-    public ResponseEntity<List<FoodResponse>> getFoods() {
+    public ResponseEntity<List<FoodResponse>> getFoods(@RequestParam int page, @RequestParam int size) {
         List<FoodEntity> foods = foodService.getAllFoods();
 
 
@@ -64,6 +65,13 @@ public class FoodController {
         }
         foodService.deleteFood(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/byPage")
+    public ResponseEntity<Page<FoodResponse>> getFoodsByPage(@RequestParam int page, @RequestParam int size) {
+        Page<FoodEntity> foods = foodService.getAllFoodsByPage(page, size);
+        Page<FoodResponse> foodResponseStream =  foods.map(FoodMapper::toFoodResponse);
+        return ResponseEntity.ok().body(foodResponseStream);
     }
 
 
