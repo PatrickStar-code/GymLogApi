@@ -10,16 +10,15 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class FoodMapper {
 
-    public static FoodEntity toFoodEntity(FoodRequest foodResponse) {
+    public static FoodEntity toFoodEntity(FoodRequest foodRequest) {
         return FoodEntity.builder()
-                .id(foodResponse.id())
-                .foodName(foodResponse.foodName())
-                .calories(foodResponse.calories())
-                .proteins(foodResponse.proteins())
-                .carbs(foodResponse.carbs())
-                .fibers(foodResponse.fibers())
-                .fats(foodResponse.fats())
-                .grams(foodResponse.grams())
+                .foodName(foodRequest.foodName())
+                .calories(foodRequest.calories())
+                .proteins(foodRequest.proteins())
+                .carbs(foodRequest.carbs())
+                .fibers(foodRequest.fibers())
+                .fats(foodRequest.fats())
+                .grams(foodRequest.grams())
                 .build();
     }
 

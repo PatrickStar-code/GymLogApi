@@ -1,0 +1,3 @@
+ALTER TABLE IF EXISTS users
+    ALTER COLUMN deleted_at DROP NOT NULL,
+    ALTER COLUMN updated_at DROP NOT NULL

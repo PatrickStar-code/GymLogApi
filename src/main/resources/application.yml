@@ -1,8 +1,19 @@
-
 spring:
-  aplication:
+  application:
     name: Gymlog
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
 
   datasource:
     username: postgres
@@ -10,19 +21,19 @@ spring:
     url: jdbc:postgresql://localhost:5432/gymlog
     driver-class-name: org.postgresql.Driver
 
-
-
   jpa:
     show-sql: true
-
+    hibernate:
+      ddl-auto: none  # ou update/create-drop/validate conforme seu caso
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
     enabled: true
 
-
-  springdoc:
-    api-docs:
-      path: /api/api-docs
-    swagger-ui:
+springdoc:
+  api-docs:
+    path: /api/api-docs
+  swagger-ui:
     path: /swagger/index.html
-
