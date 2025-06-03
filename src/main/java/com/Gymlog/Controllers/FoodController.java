@@ -6,6 +6,7 @@ import com.Gymlog.Controllers.Response.FoodResponse;
 import com.Gymlog.Entity.FoodEntity;
 import com.Gymlog.Repository.FoodRepository;
 import com.Gymlog.Service.FoodService;
+import jakarta.validation.constraints.NotNull;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -29,7 +32,6 @@ public class FoodController {
     @GetMapping("/")
     public ResponseEntity<List<FoodResponse>> getFoods(@RequestParam int page, @RequestParam int size) {
         List<FoodEntity> foods = foodService.getAllFoods();
-
 
         Stream foodResponseStream = foods.stream().map(FoodMapper::toFoodResponse);
 
@@ -76,11 +78,12 @@ public class FoodController {
 
 
     @PostMapping("/")
-    public  ResponseEntity<FoodResponse> saveFood(@RequestBody FoodRequest foodRequest) {
+    public  ResponseEntity<FoodResponse> saveFood(@RequestBody FoodRequest foodRequest, @NotNull UriComponentsBuilder uriBuilder) {
         FoodEntity foodEntity =  FoodMapper.toFoodEntity(foodRequest);
         FoodEntity savedFood = foodService.save(foodEntity);
+        FoodResponse response = FoodMapper.toFoodResponse(savedFood);
 
-        return  ResponseEntity.ok().body(FoodMapper.toFoodResponse(savedFood));
+        return  ResponseEntity.created(uriBuilder.path("/GymLog/Food/{id}").buildAndExpand(savedFood.getId()).toUri()).body(response);
     }
 
 }

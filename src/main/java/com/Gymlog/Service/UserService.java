@@ -1,5 +1,7 @@
 package com.Gymlog.Service;
 
+import com.Gymlog.Controllers.Request.UpdatePassword;
+import com.Gymlog.Controllers.Request.UpdateRequest;
 import com.Gymlog.Controllers.Request.UserRequest;
 import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Repository.UserRepository;
@@ -11,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @Service
@@ -41,6 +46,57 @@ public class UserService implements UserDetailsService {
         var user = userRepository.findByVerificationToken(code).orElseThrow();
         user.verify();
         userRepository.save(user);
+    }
+
+    public Optional<UserEntity> updateIsActive(Long id) {
+        var user = userRepository.findById(id).orElseThrow();
+        user.setActive(!user.isActive());
+        return Optional.of(userRepository.save(user));
+    }
+
+    public Optional<Void> deleteUser(long id) {
+        var user = userRepository.findById(id).orElseThrow();
+        userRepository.delete(user);
+        return Optional.empty();
+    }
+
+    public Optional<UserEntity> updateUser(UpdateRequest updateRequest, Long id) {
+        Optional<UserEntity> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            UserEntity userEntity = user.get();
+
+            userEntity.setUsername(updateRequest.username());
+            userEntity.setHeight(updateRequest.height());
+            userEntity.setWeight(updateRequest.weight());
+            userEntity.setGoal(updateRequest.goal());
+            userEntity.setGoalWeight(updateRequest.goalWeight());
+            userEntity.setActivyLevel(updateRequest.activyLevel());
+            userEntity.setAvatarUrl(updateRequest.avatarUrl());
+            userEntity.setUpdatedAt(LocalDateTime.now());
+
+            return Optional.of(userRepository.save(userEntity));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<UserEntity> updatePassword(UpdatePassword updatePassword, Long id) {
+        Optional<UserEntity> user = userRepository.findById(id);
+        UserEntity userEntity = user.get();
+        if(user.isPresent()){
+             if(!encriptador.matches(updatePassword.confirmPassword(), userEntity.getPassword())){
+                 userEntity.setPassword(encriptador.encode(updatePassword.newPassword()));
+                 return Optional.of(userRepository.save(userEntity));
+             }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<UserEntity> getUser(Long id) {
+        Optional<UserEntity> user = userRepository.findById(id);
+        if(user.isPresent()){
+            return Optional.of(user.get());
+        }
+        return Optional.empty();
     }
 }
 
