@@ -7,7 +7,10 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -27,7 +30,7 @@ public class TokenService {
                         .withExpiresAt(expirationDate(30))
                         .sign(algorithm);
             } catch (JWTCreationException exception) {
-                throw new RuntimeException("Erro ao gerar token JWT de acesso!", exception);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Erro ao gerar token JWT de acesso!");
             }
 
     }
@@ -42,7 +45,7 @@ public class TokenService {
                     .withExpiresAt(expirationDate(120))
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Erro ao gerar token JWT de acesso!", exception);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Erro ao gerar token JWT de Refresh!");
         }
 
     }
@@ -58,7 +61,7 @@ public class TokenService {
             decodedJWT = verifier.verify(token);
             return decodedJWT.getSubject();
         } catch (JWTVerificationException exception){
-            throw  new RuntimeException("Token JWT de acesso inválido!", exception);
+            throw  new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token invalido!");
         }
     }
 

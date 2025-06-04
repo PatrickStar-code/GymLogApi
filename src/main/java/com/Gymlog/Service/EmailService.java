@@ -60,7 +60,7 @@ public class EmailService {
                         "Nos vemos na próxima série 😉<br><br>" +
                         "<strong>Equipe Diário de Academia</strong>",
                 user.getUsername(),
-                URL_SITE + "/verify-user?code=" + user.getVerificationToken()
+                URL_SITE + "/GymLog/users/verify-user?code=" + user.getVerificationToken()
         );
 
 

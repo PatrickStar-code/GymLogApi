@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@Controller
+@RestController
 @RequestMapping("/GymLog/Food")
 @RequiredArgsConstructor
 public class FoodController {

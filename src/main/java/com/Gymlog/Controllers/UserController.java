@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-
+@RequestMapping("GymLog/users")
 public class UserController {
 
     private final UserService userService;
@@ -30,29 +30,29 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerUser(@RequestBody @Valid UserRequest userRequest, @NotNull UriComponentsBuilder uriBuilder){
         UserEntity usuario = userService.registerUser(userRequest);
-        var uri = uriBuilder.path("/users/{id}").buildAndExpand(usuario.getUserId()).toUri();
+        var uri = uriBuilder.path("/{id}").buildAndExpand(usuario.getUserId()).toUri();
         return ResponseEntity.created(uri).body(UserMapper.toUserResponse(usuario));
     }
 
-    @PutMapping("/users/{id}/is-active")
+    @PutMapping("/{id}/is-active")
     public ResponseEntity<UserResponse> updateIsActive(@PathVariable Long id) {
         Optional<UserEntity> user = userService.updateIsActive(id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/users/{id}/password")
+    @PutMapping("/{id}/password")
     public ResponseEntity<UserResponse> updatePassword(@RequestBody UpdatePassword updatePassword , @PathVariable Long id) {
         Optional<UserEntity> user = userService.updatePassword(updatePassword, id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("users/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@RequestBody UpdateRequest userRequest , @PathVariable Long id){
         Optional<UserEntity> user = userService.updateUser(userRequest, id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
         Optional<UserEntity> user = userService.getUser(id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -64,7 +64,7 @@ public class UserController {
             return ResponseEntity.ok("User verified with success");
         }
 
-        @DeleteMapping("/users/{id}")
+        @DeleteMapping("/{id}")
         public ResponseEntity<Void> delete(@PathVariable long id){
             userService.deleteUser(id);
             return ResponseEntity.ok().build();

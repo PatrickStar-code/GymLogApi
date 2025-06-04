@@ -1,5 +1,6 @@
 package com.Gymlog.Controllers.Mapper;
 
+import com.Gymlog.Controllers.Request.ProgressLogRequest;
 import com.Gymlog.Controllers.Response.ProgressLogResponse;
 import com.Gymlog.Controllers.Response.UserResponse;
 import com.Gymlog.Entity.ProgressLogEntity;
@@ -17,8 +18,6 @@ public class ProgressLogMapper {
 
     public static ProgressLogResponse toProgressLogResponse(ProgressLogEntity progressLogEntity) {
 
-        Long userResponse = progressLogEntity.getUser().getUserId();
-
         return ProgressLogResponse.builder()
                 .id(progressLogEntity.getId())
                 .date(progressLogEntity.getDate())
@@ -35,7 +34,30 @@ public class ProgressLogMapper {
                 .waist(progressLogEntity.getWaist())
                 .comment(progressLogEntity.getComment())
                 .responsible(progressLogEntity.getResponsible())
-                .user(userResponse)
+                .user(progressLogEntity.getUser().getUserId())
+                .build();
+    }
+
+    public static ProgressLogEntity toProgressEntity(ProgressLogRequest progressLogRequest) {
+
+        Optional<UserEntity> user = userService.getUser(progressLogRequest.user());
+
+        return ProgressLogEntity.builder()
+                .comment(progressLogRequest.comment())
+                .date(progressLogRequest.date())
+                .weight(progressLogRequest.weight())
+                .bodyFat(progressLogRequest.bodyFat())
+                .hip(progressLogRequest.hip())
+                .chest(progressLogRequest.chest())
+                .armsLeft(progressLogRequest.armsLeft())
+                .armsRight(progressLogRequest.armsRight())
+                .thighLeft(progressLogRequest.thighLeft())
+                .thighRight(progressLogRequest.thighRight())
+                .leftCalf(progressLogRequest.leftCalf())
+                .rightCalf(progressLogRequest.rightCalf())
+                .waist(progressLogRequest.waist())
+                .responsible(progressLogRequest.responsible())
+                .user(user.get())
                 .build();
     }
 }

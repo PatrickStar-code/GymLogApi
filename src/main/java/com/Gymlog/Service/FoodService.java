@@ -4,6 +4,7 @@ import com.Gymlog.Controllers.Request.FoodRequest;
 import com.Gymlog.Controllers.Response.FoodResponse;
 import com.Gymlog.Entity.FoodEntity;
 import com.Gymlog.Repository.FoodRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +31,7 @@ public class FoodService {
         return  foodRepository.findById(id);
     }
 
+    @Transactional
     public  Optional<FoodEntity> updateFood(Long id, FoodRequest foodRequest) {
         Optional<FoodEntity> food = foodRepository.findById(id);
         if (food.isPresent()) {
@@ -49,6 +51,7 @@ public class FoodService {
         return Optional.empty();
     }
 
+    @Transactional
     public FoodEntity save(FoodEntity foodEntity) {
         return foodRepository.save(foodEntity);
     }
