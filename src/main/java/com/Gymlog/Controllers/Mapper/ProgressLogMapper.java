@@ -5,6 +5,7 @@ import com.Gymlog.Controllers.Response.ProgressLogResponse;
 import com.Gymlog.Controllers.Response.UserResponse;
 import com.Gymlog.Entity.ProgressLogEntity;
 import com.Gymlog.Entity.UserEntity;
+import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.UtilityClass;
@@ -13,8 +14,6 @@ import java.util.Optional;
 
 @UtilityClass
 public class ProgressLogMapper {
-
-    private static UserService userService;
 
     public static ProgressLogResponse toProgressLogResponse(ProgressLogEntity progressLogEntity) {
 
@@ -38,10 +37,7 @@ public class ProgressLogMapper {
                 .build();
     }
 
-    public static ProgressLogEntity toProgressEntity(ProgressLogRequest progressLogRequest) {
-
-        Optional<UserEntity> user = userService.getUser(progressLogRequest.user());
-
+    public static ProgressLogEntity toProgressEntity(ProgressLogRequest progressLogRequest, UserEntity userEntity) {
         return ProgressLogEntity.builder()
                 .comment(progressLogRequest.comment())
                 .date(progressLogRequest.date())
@@ -57,7 +53,7 @@ public class ProgressLogMapper {
                 .rightCalf(progressLogRequest.rightCalf())
                 .waist(progressLogRequest.waist())
                 .responsible(progressLogRequest.responsible())
-                .user(user.get())
+                .user(userEntity)
                 .build();
     }
 }

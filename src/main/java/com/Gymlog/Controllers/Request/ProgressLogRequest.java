@@ -19,7 +19,7 @@ public record ProgressLogRequest(
         double thighRight,
         double leftCalf,
         double rightCalf,
-        String waist,
+        double waist,
         String comment,
         String responsible,
         Long user

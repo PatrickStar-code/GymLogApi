@@ -1,0 +1,2 @@
+ALTER TABLE progress_log
+ALTER COLUMN weight TYPE NUMERIC USING weight::NUMERIC;

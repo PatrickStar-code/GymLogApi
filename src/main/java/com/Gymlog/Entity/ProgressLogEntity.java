@@ -54,7 +54,7 @@ public class ProgressLogEntity {
     private double rightCalf;
 
     @Column(nullable = false)
-    private String waist;
+    private double waist;
 
     @Column(nullable = false)
     private String comment;
