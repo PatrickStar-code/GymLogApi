@@ -2,6 +2,7 @@ package com.Gymlog.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "workout_plan")
 public class WorkoutPlanEntity {
     @Id
@@ -27,7 +29,7 @@ public class WorkoutPlanEntity {
     private UserEntity user;
 
     @OneToMany
-    private Set<workoutExercicesEntity> workoutExercices;
+    private Set<WorkoutExercicesEntity> workoutExercices;
 
     @OneToMany
     private Set<WorkoutSetsEntity> workoutSets;

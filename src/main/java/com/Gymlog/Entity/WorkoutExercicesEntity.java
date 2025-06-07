@@ -2,6 +2,7 @@ package com.Gymlog.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class workoutExercicesEntity {
+@Builder
+public class WorkoutExercicesEntity {
     @Id
     @Column(name = "workout_exercices_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +21,6 @@ public class workoutExercicesEntity {
     @Column(nullable = false, name = "exercice_id")
     private String exerciceId;
 
-    @Column(nullable = false)
-    private  int sets;
-
-    @Column(nullable = false)
-    private int reps;
 
     @Column(nullable = false)
     private double weight;
