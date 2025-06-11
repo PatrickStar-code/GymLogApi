@@ -56,6 +56,7 @@ public class FoodService {
         return foodRepository.save(foodEntity);
     }
 
+    @Transactional
     public void deleteFood(long id) {
         foodRepository.deleteById(id);
     }

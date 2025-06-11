@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS workout_exercices DROP COLUMN weight

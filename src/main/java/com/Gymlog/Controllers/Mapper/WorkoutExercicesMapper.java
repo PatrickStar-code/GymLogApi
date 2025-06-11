@@ -12,7 +12,6 @@ public class WorkoutExercicesMapper {
     public static WorkoutExercicesEntity toWorkoutExercicesEntity(WorkoutExercicesRequest workoutExercicesRequest, WorkoutPlanEntity workoutPlanEntity) {
         return WorkoutExercicesEntity.builder()
                 .exerciceId(workoutExercicesRequest.exerciceId())
-                .weight(workoutExercicesRequest.weight())
                 .workoutPlan(workoutPlanEntity)
                 .build();
     }
@@ -22,7 +21,6 @@ public class WorkoutExercicesMapper {
         return WorkoutExercicesResponse.builder()
                 .id(workoutExercicesEntity.getId())
                 .exerciceId(workoutExercicesEntity.getExerciceId())
-                .weight(workoutExercicesEntity.getWeight())
                 .workoutPlanId(workoutExercicesEntity.getWorkoutPlan().getId())
                 .build();
     }

@@ -32,6 +32,7 @@ public class ProgressLogService {
         return repository.save(progressLog);
     }
 
+    @Transactional
     public Optional<ProgressLogEntity> updateProgressLog(ProgressLogRequest progressLogRequest, Long id) {
         Optional<ProgressLogEntity> progressLog = repository.findById(id);
         if (progressLog.isPresent()) {
@@ -57,6 +58,7 @@ public class ProgressLogService {
     }
 
 
+    @Transactional
     public Optional<Void> deleteProgressLog(Long id) {
         Optional<ProgressLogEntity> progressLog = repository.findById(id);
         if(progressLog.isEmpty()) throw new NotFoundException("NOT_FOUND", "ProgressLog nao encontrado!");

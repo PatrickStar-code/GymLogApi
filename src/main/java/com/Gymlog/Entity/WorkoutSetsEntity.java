@@ -2,6 +2,7 @@ package com.Gymlog.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class WorkoutSetsEntity {
     @Id
     @Column(name = "workout_sets_id")
@@ -27,5 +29,5 @@ public class WorkoutSetsEntity {
 
     @ManyToOne
     @JoinColumn(name = "workout_exercices_id")
-    private workoutExercicesEntity workoutExercices;
+    private WorkoutExercicesEntity workoutExercices;
 }

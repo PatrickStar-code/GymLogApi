@@ -1,7 +1,10 @@
 package com.Gymlog.Controllers.Request;
 
 import com.Gymlog.Controllers.Response.WorkoutExercicesResponse;
+import com.Gymlog.Controllers.Response.WorkoutSetsResponse;
 import com.Gymlog.Entity.UserEntity;
+import com.Gymlog.Entity.WorkoutExercicesEntity;
+import com.Gymlog.Entity.WorkoutPlanEntity;
 import com.Gymlog.Entity.WorkoutSetsEntity;
 import lombok.Builder;
 
@@ -12,7 +15,7 @@ public record WorkoutPlanRequest(
         String name,
         String imageUrl,
         UserEntity user,
-        Set<WorkoutExercicesResponse> workoutExercices,
-        Set<WorkoutSetsEntity> workoutSets
+        WorkoutExercicesEntity workoutExercices,
+       WorkoutSetsEntity workoutSets
 ){
 }

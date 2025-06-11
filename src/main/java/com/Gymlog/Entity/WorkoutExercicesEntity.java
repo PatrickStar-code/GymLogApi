@@ -21,10 +21,6 @@ public class WorkoutExercicesEntity {
     @Column(nullable = false, name = "exercice_id")
     private String exerciceId;
 
-
-    @Column(nullable = false)
-    private double weight;
-
     @ManyToOne
     @JoinColumn(name = "workout_plan_id")
     private WorkoutPlanEntity workoutPlan;

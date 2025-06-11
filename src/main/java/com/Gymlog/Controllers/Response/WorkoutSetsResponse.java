@@ -3,9 +3,11 @@ package com.Gymlog.Controllers.Response;
 import lombok.Builder;
 
 @Builder
-public record WorkoutExercicesResponse(
+public record WorkoutSetsResponse(
         Long id,
-        String exerciceId,
+        int sets,
+        int reps,
+        double weight,
         Long workoutPlanId
 ) {
 }

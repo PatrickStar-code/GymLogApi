@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice
 public class ErrorHandler {
@@ -18,6 +19,11 @@ public class ErrorHandler {
     @ExceptionHandler(NotFoundException.class)
     public  ResponseEntity<String> handleNotFoundException(NotFoundException e) {
         return  ResponseEntity.status(HttpStatusCode.valueOf(404)).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public  ResponseEntity<String> handleResponseStatusException(ResponseStatusException e) {
+        return  ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
     }
 
     @ExceptionHandler(PasswordConfirmIncorrectException.class)
