@@ -3,6 +3,7 @@ package com.Gymlog.Entity;
 import com.Gymlog.Enums.MealType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,13 +15,14 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "meals")
 @Entity
+@Builder
 public class MealEntity {
     @Id
     @Column(name = "meal_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
     @Column(nullable = false)
@@ -42,6 +44,6 @@ public class MealEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MealItemEntity> mealItems;
 }

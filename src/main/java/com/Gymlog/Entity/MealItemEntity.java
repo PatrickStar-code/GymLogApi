@@ -2,6 +2,7 @@ package com.Gymlog.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "meal_item")
 @Entity
+@Builder
 public class MealItemEntity {
     @Id
     @Column(name = "meal_item_id")
