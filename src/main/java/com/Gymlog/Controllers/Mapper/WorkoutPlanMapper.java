@@ -14,14 +14,11 @@ import java.util.Set;
 
 @UtilityClass
 public class WorkoutPlanMapper {
-    public static WorkoutPlanEntity toWorkoutPlanEntity(WorkoutPlanRequest workoutPlanRequest, UserEntity userEntity) {
+    public static WorkoutPlanEntity toWorkoutPlanEntity(WorkoutPlanRequest workoutPlanRequest) {
         return
                 WorkoutPlanEntity.builder()
                 .name(workoutPlanRequest.name())
                 .imageUrl(workoutPlanRequest.imageUrl())
-                .user(userEntity)
-                .workoutExercices((Set<WorkoutExercicesEntity>) workoutPlanRequest.workoutExercices())
-                .workoutSets((Set<WorkoutSetsEntity>) workoutPlanRequest.workoutSets())
                 .build();
     }
 

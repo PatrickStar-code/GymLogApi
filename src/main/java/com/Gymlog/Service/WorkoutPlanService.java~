@@ -38,7 +38,7 @@ public class WorkoutPlanService {
         if(result.isPresent()) repository.delete(result.get());
         return Optional.empty();
     }
-
+    
 
     public WorkoutPlanEntity createWorkoutPlan(WorkoutPlanRequest workoutPlanRequest) {
         UserEntity user = userRepository.findById(workoutPlanRequest.userid()).orElseThrow( () -> new NotFoundException("NOT_FOUND", "Usuário nao encontrado!"));
