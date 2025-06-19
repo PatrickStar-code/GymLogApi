@@ -28,11 +28,4 @@ public class WorkoutPlanEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany
-    private Set<WorkoutExercicesEntity> workoutExercices;
-
-    @OneToMany
-    private Set<WorkoutSetsEntity> workoutSets;
-
-
 }

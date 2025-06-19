@@ -45,15 +45,22 @@ public class WorkoutPlanController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}/user")
     public ResponseEntity<List<WorkoutPlanResponse>> getWorkoutPlanByUser(@PathVariable Long id) {
         List<WorkoutPlanEntity> workoutPlanEntity = service.findByUser(id);
         List<WorkoutPlanResponse> workoutPlanResponses = workoutPlanEntity.stream().map(WorkoutPlanMapper::toWorkoutPlanResponse).toList();
         return ResponseEntity.ok(workoutPlanResponses);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWorkoutPlan(@PathVariable Long id) {
+        service.deleteWorkoutPlan(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/")
     public ResponseEntity<WorkoutPlanResponse> createWorkoutPlan(@RequestBody WorkoutPlanRequest workoutPlanRequest) {
+        System.out.println(workoutPlanRequest.userid());
         WorkoutPlanEntity workoutPlanEntity = service.createWorkoutPlan(workoutPlanRequest);
         WorkoutPlanResponse workoutPlanResponse = WorkoutPlanMapper.toWorkoutPlanResponse(workoutPlanEntity);
         return ResponseEntity.ok(workoutPlanResponse);

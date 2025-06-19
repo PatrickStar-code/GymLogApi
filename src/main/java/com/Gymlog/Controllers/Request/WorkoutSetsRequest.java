@@ -7,7 +7,6 @@ public record WorkoutSetsRequest(
         int reps,
         int sets,
         double weight,
-        Long workoutExercicesId,
-        Long workoutPlanId
+        Long workoutExercicesId
 ) {
 }

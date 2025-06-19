@@ -14,8 +14,6 @@ import java.util.Set;
 public record WorkoutPlanRequest(
         String name,
         String imageUrl,
-        Long userid,
-        Long workoutExercicesid,
-        Long workoutSetsid
+        Long userid
 ){
 }

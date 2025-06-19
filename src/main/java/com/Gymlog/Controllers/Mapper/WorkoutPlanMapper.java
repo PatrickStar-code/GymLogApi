@@ -23,16 +23,11 @@ public class WorkoutPlanMapper {
     }
 
     public static WorkoutPlanResponse toWorkoutPlanResponse(WorkoutPlanEntity workoutPlanEntity) {
-
-        WorkoutExercicesResponse workoutExercicesResponse = WorkoutExercicesMapper.toWorkoutExercicesResponse((WorkoutExercicesEntity) workoutPlanEntity.getWorkoutExercices());
-
         return WorkoutPlanResponse.builder()
                 .id(workoutPlanEntity.getId())
                 .name(workoutPlanEntity.getName())
                 .imageUrl(workoutPlanEntity.getImageUrl())
-                .user(workoutPlanEntity.getUser())
-                .workoutExercices(workoutExercicesResponse)
-                //.workoutSets(workoutPlanEntity.getWorkoutSets())
+                .userId(workoutPlanEntity.getUser().getUserId())
                 .build();
     }
 }

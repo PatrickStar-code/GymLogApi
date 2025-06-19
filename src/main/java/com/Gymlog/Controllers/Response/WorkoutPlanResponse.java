@@ -11,7 +11,6 @@ import java.util.Set;
 public record WorkoutPlanResponse(Long id,
                                   String name,
                                   String imageUrl,
-                                  UserEntity user,
-                                 WorkoutExercicesResponse workoutExercices,
-                                 WorkoutSetsResponse workoutSets) {
+                                  Long userId
+                            ) {
 }

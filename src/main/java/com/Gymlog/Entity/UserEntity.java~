@@ -4,7 +4,6 @@ import com.Gymlog.Controllers.Request.UserRequest;
 import com.Gymlog.Enums.ActivyLevel;
 import com.Gymlog.Enums.GenderEnum;
 import com.Gymlog.Enums.Goal;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -96,7 +95,6 @@ public class UserEntity implements UserDetails {
     private Set<ProgressLogEntity> progressLogs;
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
     private Set<WorkoutPlanEntity> workoutPlans;
 
     @OneToMany(mappedBy = "user")

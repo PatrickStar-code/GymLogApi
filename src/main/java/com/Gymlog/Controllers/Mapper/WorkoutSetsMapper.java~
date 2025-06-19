@@ -22,7 +22,7 @@ public class WorkoutSetsMapper {
                 .sets(workoutSetsEntity.getSets())
                 .reps(workoutSetsEntity.getReps())
                 .weight(workoutSetsEntity.getWeight())
-                .workoutExercicesId(workoutSetsEntity.getWorkoutExercices().getWorkoutPlan().getId())
+                .workoutPlanId(workoutSetsEntity.getWorkoutExercices().getWorkoutPlan().getId())
                 .build();
     }
 
