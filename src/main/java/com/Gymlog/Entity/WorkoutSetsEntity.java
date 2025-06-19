@@ -28,7 +28,7 @@ public class WorkoutSetsEntity {
     @Column(nullable = false)
     private double weight;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "workout_exercices_id")
     private WorkoutExercicesEntity workoutExercices;
 }

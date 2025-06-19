@@ -21,7 +21,7 @@ public class WorkoutExercicesEntity {
     @Column(nullable = false, name = "exercice_id")
     private String exerciceId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "workout_plan_id")
     private WorkoutPlanEntity workoutPlan;
 
