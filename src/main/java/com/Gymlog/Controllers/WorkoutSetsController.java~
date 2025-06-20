@@ -1,0 +1,38 @@
+package com.Gymlog.Controllers;
+
+import com.Gymlog.Controllers.Mapper.WorkoutSetsMapper;
+import com.Gymlog.Controllers.Response.WorkoutSetsResponse;
+import com.Gymlog.Entity.WorkoutSetsEntity;
+import com.Gymlog.Service.WorkoutSetService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("GymLog/workoutSets")
+@RequiredArgsConstructor
+public class WorkoutSetsController {
+
+    private final WorkoutSetService service;
+
+    @GetMapping("/")
+    public ResponseEntity<List<WorkoutSetsResponse>> getWorkoutSets() {
+        List<WorkoutSetsEntity> workoutSetsResponse = service.getWorkoutSets();
+        List<WorkoutSetsResponse> workoutSetsResponses = workoutSetsResponse.stream().map(WorkoutSetsMapper::toWorkoutSetsResponse).toList();
+        return ResponseEntity.ok(workoutSetsResponses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<WorkoutSetsResponse> getWorkoutSetsById(@PathVariable Long id) {
+        Optional<WorkoutSetsEntity> workoutSets = service.findById(id);
+        if(workoutSets.isPresent()) return ResponseEntity.ok(WorkoutSetsMapper.toWorkoutSetsResponse(workoutSets.get()));
+        return ResponseEntity.notFound().build();
+    }
+
+}

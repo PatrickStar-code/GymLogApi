@@ -16,13 +16,13 @@ public class WorkoutSetsMapper {
                 .build();
     }
 
-    public static WorkoutSetsResponse toWorkoutSetsResponse(WorkoutSetsEntity workoutSetsEntity) {
+    public static WorkoutSetsResponse toWorkoutSetsResponse(WorkoutSetsRequest workoutSetsEntity) {
         return WorkoutSetsResponse.builder()
                 .id(workoutSetsEntity.getId())
                 .sets(workoutSetsEntity.getSets())
                 .reps(workoutSetsEntity.getReps())
                 .weight(workoutSetsEntity.getWeight())
-                .workoutPlanId(workoutSetsEntity.getWorkoutExercices().getWorkoutPlan().getId())
+                .workoutExercices(WorkoutExercicesMapper.toWorkoutExercicesResponse(workoutSetsEntity.getWorkoutExercices()))
                 .build();
     }
 

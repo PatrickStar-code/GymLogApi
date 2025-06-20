@@ -1,27 +1,18 @@
 package com.Gymlog.Controllers.Mapper;
 
-import com.Gymlog.Controllers.Request.WorkoutExercicesRequest;
-import com.Gymlog.Controllers.Response.WorkoutExercicesResponse;
+import com.Gymlog.Controllers.Response.ExerciseResponse;
+import com.Gymlog.Controllers.Response.WorkoutExercisesResponse;
 import com.Gymlog.Entity.WorkoutExercicesEntity;
-import com.Gymlog.Entity.WorkoutPlanEntity;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class WorkoutExercicesMapper {
-
-    public static WorkoutExercicesEntity toWorkoutExercicesEntity(WorkoutExercicesRequest workoutExercicesRequest, WorkoutPlanEntity workoutPlanEntity) {
-        return WorkoutExercicesEntity.builder()
-                .exerciceId(workoutExercicesRequest.exerciceId())
-                .workoutPlan(workoutPlanEntity)
-                .build();
-    }
-
-
-    public static WorkoutExercicesResponse toWorkoutExercicesResponse(WorkoutExercicesEntity workoutExercicesEntity) {
-        return WorkoutExercicesResponse.builder()
+    public  static WorkoutExercisesResponse toWorkoutExercisesResponse(WorkoutExercicesEntity workoutExercicesEntity, ExerciseResponse exerciseResponse){
+        return WorkoutExercisesResponse.builder()
                 .id(workoutExercicesEntity.getId())
-                .exerciceId(workoutExercicesEntity.getExerciceId())
                 .workoutPlanId(workoutExercicesEntity.getWorkoutPlan().getId())
+                .exerciseResponse(exerciseResponse)
                 .build();
     }
 }
+

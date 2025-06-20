@@ -1,6 +1,5 @@
 package com.Gymlog.Controllers.Request;
 
-import com.Gymlog.Controllers.Response.WorkoutExercicesResponse;
 import com.Gymlog.Controllers.Response.WorkoutSetsResponse;
 import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Entity.WorkoutExercicesEntity;

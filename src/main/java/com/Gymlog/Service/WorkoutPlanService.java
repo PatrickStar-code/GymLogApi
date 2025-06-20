@@ -41,7 +41,6 @@ public class WorkoutPlanService {
 
 
     public WorkoutPlanEntity createWorkoutPlan(WorkoutPlanRequest workoutPlanRequest) {
-        System.out.println(workoutPlanRequest);
         UserEntity user = userRepository.findById(workoutPlanRequest.userid()).orElseThrow( () -> new NotFoundException("NOT_FOUND", "Usuário nao encontrado!"));
 
         WorkoutPlanEntity workoutPlanEntity = WorkoutPlanMapper.toWorkoutPlanEntity(workoutPlanRequest);
