@@ -8,6 +8,6 @@ public record WorkoutSetsResponse(
         int sets,
         int reps,
         double weight,
-        WorkoutExercisesResponse workoutExercices
+        Long workoutExercicesId
 ) {
 }

@@ -60,7 +60,6 @@ public class WorkoutPlanController {
 
     @PostMapping("/")
     public ResponseEntity<WorkoutPlanResponse> createWorkoutPlan(@RequestBody WorkoutPlanRequest workoutPlanRequest) {
-        System.out.println(workoutPlanRequest.userid());
         WorkoutPlanEntity workoutPlanEntity = service.createWorkoutPlan(workoutPlanRequest);
         WorkoutPlanResponse workoutPlanResponse = WorkoutPlanMapper.toWorkoutPlanResponse(workoutPlanEntity);
         return ResponseEntity.ok(workoutPlanResponse);

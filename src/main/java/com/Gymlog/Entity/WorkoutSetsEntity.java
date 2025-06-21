@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "workout_sets")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,5 +29,5 @@ public class WorkoutSetsEntity {
 
     @ManyToOne
     @JoinColumn(name = "workout_exercices_id")
-    private WorkoutExercisesEntity workoutExercices;
+    private WorkoutExercisesEntity workoutExercises;
 }
