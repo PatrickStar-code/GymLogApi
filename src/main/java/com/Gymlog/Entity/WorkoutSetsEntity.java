@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table
@@ -30,5 +29,5 @@ public class WorkoutSetsEntity {
 
     @ManyToOne
     @JoinColumn(name = "workout_exercices_id")
-    private WorkoutExercicesEntity workoutExercices;
+    private WorkoutExercisesEntity workoutExercices;
 }

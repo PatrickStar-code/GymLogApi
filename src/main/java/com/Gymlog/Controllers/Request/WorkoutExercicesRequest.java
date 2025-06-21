@@ -5,7 +5,6 @@ import lombok.Builder;
 @Builder
 public record WorkoutExercicesRequest
         (
-                Long id,
                 String exerciceId,
                 Long workoutPlanId
         ){

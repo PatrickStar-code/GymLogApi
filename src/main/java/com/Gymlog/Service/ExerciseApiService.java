@@ -23,15 +23,11 @@ public class ExerciseApiService {
         String url = "https://www.exercisedb.dev/api/v1/exercises/" + id;
         ExerciseApiWrapperResponse response = restTemplate.getForObject(url, ExerciseApiWrapperResponse.class);
 
-        System.out.println(id);
-
-        System.out.println(response);
-
         if (response != null && response.success()) {
-            System.out.println(response.data());
             return response.data();
         }
         throw new RuntimeException("Failed to fetch exercise");
+
     }
 
 }

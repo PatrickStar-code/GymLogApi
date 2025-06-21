@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WorkoutExercicesEntity {
+public class WorkoutExercisesEntity {
     @Id
     @Column(name = "workout_exercices_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class WorkoutExercicesEntity {
     @Column(nullable = false, name = "exercice_id")
     private String exerciceId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "workout_plan_id")
     private WorkoutPlanEntity workoutPlan;
 
