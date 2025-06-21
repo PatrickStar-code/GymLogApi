@@ -1,6 +1,7 @@
 package com.Gymlog.Controllers;
 
 import com.Gymlog.Controllers.Mapper.WorkoutSetsMapper;
+import com.Gymlog.Controllers.Request.WorkoutSetsRequest;
 import com.Gymlog.Controllers.Response.WorkoutSetsResponse;
 import com.Gymlog.Entity.WorkoutSetsEntity;
 import com.Gymlog.Service.WorkoutSetsService;
@@ -46,5 +47,19 @@ public class WorkoutSetsController {
             List<WorkoutSetsEntity> workoutSets = service.findByWorkoutExercicesId(id);
             List<WorkoutSetsResponse> response =  workoutSets.stream().map(WorkoutSetsMapper::toWorkoutSetsResponse).toList();
             return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<WorkoutSetsResponse> updateWorkoutSets(@RequestBody WorkoutSetsRequest workoutSetsRequest, @PathVariable Long id) {
+        Optional<WorkoutSetsEntity> response = service.updateWorkoutSets(workoutSetsRequest, id);
+        if(response.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(WorkoutSetsMapper.toWorkoutSetsResponse(response.get()));
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<WorkoutSetsResponse> createWorkoutSets(@RequestBody WorkoutSetsRequest workoutSetsRequest) {
+        Optional<WorkoutSetsEntity> response = service.createWorkoutSets(workoutSetsRequest);
+        if(response.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(WorkoutSetsMapper.toWorkoutSetsResponse(response.get()));
     }
 }
