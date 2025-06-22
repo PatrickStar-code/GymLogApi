@@ -7,6 +7,7 @@ import com.Gymlog.Controllers.Request.UserRequest;
 import com.Gymlog.Controllers.Response.UserResponse;
 import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Service.UserService;
+import com.Gymlog.SwaggerInterface.UserControllerInterface;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -25,55 +26,52 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("GymLog/users")
-public class UserController {
+public class UserController implements UserControllerInterface {
 
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponse> registerUser(@RequestBody @Valid UserRequest userRequest, @NotNull UriComponentsBuilder uriBuilder){
+    @Override
+    public ResponseEntity<UserResponse> registerUser(UserRequest userRequest, UriComponentsBuilder uriBuilder) {
         UserEntity usuario = userService.registerUser(userRequest);
         var uri = uriBuilder.path("/{id}").buildAndExpand(usuario.getUserId()).toUri();
         return ResponseEntity.created(uri).body(UserMapper.toUserResponse(usuario));
     }
 
-    @PutMapping("/{id}/is-active")
-    public ResponseEntity<UserResponse> updateIsActive(@PathVariable Long id) {
+    @Override
+    public ResponseEntity<UserResponse> updateIsActive(Long id) {
         Optional<UserEntity> user = userService.updateIsActive(id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}/password")
-    public ResponseEntity<UserResponse> updatePassword(@RequestBody UpdatePassword updatePassword , @PathVariable Long id) {
+    @Override
+    public ResponseEntity<UserResponse> updatePassword(UpdatePassword updatePassword, Long id) {
         Optional<UserEntity> user = userService.updatePassword(updatePassword, id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@RequestBody UpdateRequest userRequest , @PathVariable Long id){
+    @Override
+    public ResponseEntity<UserResponse> updateUser(UpdateRequest userRequest, Long id) {
         Optional<UserEntity> user = userService.updateUser(userRequest, id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
+    @Override
+    public ResponseEntity<String> verifyEmail(String code) {
+        userService.verifyEmail(code);
+        return ResponseEntity.ok("User verified with success");
+    }
+
+    @Override
+    public ResponseEntity<Void> delete(long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<UserResponse> getUser(Long id) {
         Optional<UserEntity> user = userService.getUser(id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    @GetMapping("/verify-user")
-        public ResponseEntity<String> verifyEmail(@RequestParam(value = "code") String code) {
-            userService.verifyEmail(code);
-            return ResponseEntity.ok("User verified with success");
-        }
-
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Void> delete(@PathVariable long id){
-            userService.deleteUser(id);
-            return ResponseEntity.noContent().build();
-        }
-
-
-
 }
 
 

@@ -45,7 +45,6 @@ public class UserEntity implements UserDetails {
     @Column( nullable = false)
     private String password;
 
-
     @Column( nullable = false)
     private LocalDateTime createdAt;
 

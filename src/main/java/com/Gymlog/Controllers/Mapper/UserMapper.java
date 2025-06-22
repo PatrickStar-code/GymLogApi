@@ -10,7 +10,7 @@ public class UserMapper {
 
     public static UserResponse toUserResponse(UserEntity userEntity) {
         return UserResponse.builder()
-                .userid(userEntity.getUserId())
+                .userId(userEntity.getUserId())
                 .username(userEntity.getUsername())
                 .email(userEntity.getEmail())
                 .createdAt(userEntity.getCreatedAt())
