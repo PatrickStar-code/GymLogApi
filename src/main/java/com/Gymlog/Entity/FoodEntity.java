@@ -42,6 +42,4 @@ public class FoodEntity {
     @Column(nullable = false)
     private double grams;
 
-    @OneToMany(mappedBy = "food")
-    private Set<MealItemEntity> mealItems;
 }

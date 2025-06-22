@@ -4,6 +4,7 @@ import com.Gymlog.Controllers.Request.UpdatePassword;
 import com.Gymlog.Controllers.Request.UpdateRequest;
 import com.Gymlog.Controllers.Request.UserRequest;
 import com.Gymlog.Entity.UserEntity;
+import com.Gymlog.Entity.WorkoutPlanEntity;
 import com.Gymlog.Exceptions.BussinesRuleException;
 import com.Gymlog.Exceptions.EmailExistException;
 import com.Gymlog.Exceptions.NotFoundException;
@@ -30,6 +31,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder encriptador;
     private  final EmailService emailService;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -58,6 +60,7 @@ public class UserService implements UserDetailsService {
     }
 
 
+    @Transactional
     public Optional<UserEntity> updateIsActive(Long id) {
         UserEntity user = userRepository.findById(id).orElseThrow( () -> new NotFoundException("NOT_FOUND", "Usuário nao encontrado!"));
         user.setActive(!user.isActive());
@@ -65,8 +68,9 @@ public class UserService implements UserDetailsService {
     }
 
 
+    @Transactional
     public Optional<Void> deleteUser(long id) {
-        var user = userRepository.findById(id).orElseThrow( () -> new NotFoundException("NOT_FOUND", "Usuário nao encontrado!"));
+        UserEntity user = userRepository.findById(id).orElseThrow( () -> new NotFoundException("NOT_FOUND", "Usuário nao encontrado!"));
         userRepository.delete(user);
         return Optional.empty();
     }
@@ -94,9 +98,9 @@ public class UserService implements UserDetailsService {
     @Transactional
     public Optional<UserEntity> updatePassword(UpdatePassword updatePassword, Long id) {
         Optional<UserEntity> user = userRepository.findById(id);
-        UserEntity userEntity = user.get();
         if(user.isPresent()){
-             if(!encriptador.matches(updatePassword.confirmPassword(), userEntity.getPassword())){
+            UserEntity userEntity = user.get();
+            if(!encriptador.matches(updatePassword.confirmPassword(), userEntity.getPassword())){
                  throw new PasswordConfirmIncorrectException("PASSWORD_NOT_MATCH", "Senhas nao conferem!");
              }else{
                  userEntity.setPassword(encriptador.encode(updatePassword.newPassword()));

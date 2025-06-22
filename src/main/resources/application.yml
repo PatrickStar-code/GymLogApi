@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:classpath:.env
   application:
     name: Gymlog
 
@@ -14,6 +16,11 @@ spring:
           starttls:
             enable: true
     protocol: smtp
+
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: ${JWT_ISSUER}
+
 
   datasource:
     username: postgres

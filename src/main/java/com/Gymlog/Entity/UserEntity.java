@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -49,6 +50,7 @@ public class UserEntity implements UserDetails {
     private LocalDateTime createdAt;
 
     @Column( nullable = false)
+    @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
     @Column( nullable = false)
@@ -61,6 +63,7 @@ public class UserEntity implements UserDetails {
     private int age;
 
     @Column( nullable = false)
+    @Enumerated(EnumType.STRING)
     private Goal goal;
 
     @Column( nullable = false)
@@ -70,6 +73,7 @@ public class UserEntity implements UserDetails {
     private  LocalDateTime birthDate;
 
     @Column( nullable = false)
+    @Enumerated(EnumType.STRING)
     private ActivyLevel activyLevel;
 
     @Column(name = "avatar_url" , nullable = false)
@@ -92,14 +96,14 @@ public class UserEntity implements UserDetails {
     @Column( name = "verification_token_expiration_date")
     private LocalDateTime tokenExpirationDate;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProgressLogEntity> progressLogs;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<WorkoutPlanEntity> workoutPlans;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MealEntity> meals;
 
 

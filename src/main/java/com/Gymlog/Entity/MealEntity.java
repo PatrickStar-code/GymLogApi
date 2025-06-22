@@ -26,24 +26,26 @@ public class MealEntity {
     private LocalDateTime dateTime;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private MealType mealType;
 
     @Column(nullable = false)
-    private int calories;
+    private double calories;
 
     @Column(nullable = false)
-    private int proteins;
+    private double proteins;
 
     @Column(nullable = false)
-    private int carbs;
+    private double carbs;
 
     @Column(nullable = false)
-    private int fats;
+    private double fats;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MealItemEntity> mealItems;
+
 }

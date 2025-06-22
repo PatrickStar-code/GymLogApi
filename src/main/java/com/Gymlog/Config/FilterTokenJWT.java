@@ -25,20 +25,36 @@ public class FilterTokenJWT  extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //Get Token Requisition
-        String token = getTokenRequisition(request);
+        try {
+            String token = getTokenRequisition(request);
 
+            if (token != null) {
+                String email = tokenService.verifyToken(token);
+                UserEntity user = userRepository.findByEmailIgnoreCaseAndVerifiedTrue(email)
+                        .orElseThrow(() -> new RuntimeException("Usuário não encontrado ou não verificado"));
 
-        if(token != null){
-            String email = tokenService.verifyToken(token);
-            UserEntity user = userRepository.findByEmailIgnoreCaseAndVerifiedTrue(email).orElseThrow();
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
+
+        } catch (Exception ex) {
+            // Limpa o contexto de segurança para evitar problemas posteriores
+            SecurityContextHolder.clearContext();
+
+            // Define o status HTTP e o conteúdo da resposta
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+            response.setContentType("application/json");
+
+            // Monta uma resposta JSON simples
+            String json = "{\"error\": \"" + ex.getMessage().replace("\"", "'") + "\"}";
+
+            response.getWriter().write(json);
+            response.getWriter().flush();
         }
-
-        filterChain.doFilter(request, response);
     }
+
 
     private String getTokenRequisition(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization");

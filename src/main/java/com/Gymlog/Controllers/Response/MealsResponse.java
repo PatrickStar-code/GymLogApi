@@ -10,10 +10,10 @@ public record MealsResponse(
     Long id,
     LocalDateTime dateTime,
     MealType mealType,
-    int calories,
-    int proteins,
-    int carbs,
-    int fats,
+    double calories,
+    double proteins,
+    double carbs,
+    double fats,
     UserResponse user
 ) {
 }

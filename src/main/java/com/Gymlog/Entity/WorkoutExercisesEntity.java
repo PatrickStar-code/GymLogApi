@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Table(name = "workout_exercices")
 @Entity
 @Data
@@ -22,8 +24,10 @@ public class WorkoutExercisesEntity {
     private String exerciceId;
 
     @ManyToOne
-    @JoinColumn(name = "workout_plan_id")
+    @JoinColumn(name = "workout_plan_id", nullable = false)
     private WorkoutPlanEntity workoutPlan;
 
+    @OneToMany(mappedBy = "workoutExercises", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<WorkoutSetsEntity> workoutSets;
 
 }

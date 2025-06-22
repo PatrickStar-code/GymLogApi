@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record MealItemResponse(
     Long id,
-    int quantity,
+    double quantity,
     FoodResponse food,
     MealsResponse meals
 ) {

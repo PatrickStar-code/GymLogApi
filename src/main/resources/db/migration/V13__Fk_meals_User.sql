@@ -1,0 +1,6 @@
+ALTER TABLE meals DROP CONSTRAINT IF EXISTS fk_meals_user;
+
+ALTER TABLE meals
+ADD CONSTRAINT fk_meals_user
+FOREIGN KEY (user_id) REFERENCES users(user_id)
+ON DELETE CASCADE;

@@ -6,6 +6,6 @@ CREATE TABLE workout_plan (
     CONSTRAINT fk_workout_plan_user
         FOREIGN KEY (user_id)
         REFERENCES users(user_id)
-        ON DELETE SET NULL
+        ON DELETE  CASCADE
 
 );

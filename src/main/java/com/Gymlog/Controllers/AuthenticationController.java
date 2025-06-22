@@ -24,14 +24,20 @@ public class AuthenticationController {
     private final UserRepository userRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenData> Login(@Valid @RequestBody LoginUser user){
-        var authentication = new UsernamePasswordAuthenticationToken(user.email(), user.password());
-        var Token = authenticationManager.authenticate(authentication);
+    public ResponseEntity<?> Login(@Valid @RequestBody LoginUser user){
+        try {
+            var authentication = new UsernamePasswordAuthenticationToken(user.email(), user.password());
+            var Token = authenticationManager.authenticate(authentication);
 
-        String TokenJwt =tokenService.generateToken((UserEntity) Token.getPrincipal());
-        String refreshJwt = tokenService.generateRefreshToken((UserEntity) Token.getPrincipal());
+            String TokenJwt =tokenService.generateToken((UserEntity) Token.getPrincipal());
+            String refreshJwt = tokenService.generateRefreshToken((UserEntity) Token.getPrincipal());
 
-        return ResponseEntity.ok(new TokenData (TokenJwt, refreshJwt));
+            return ResponseEntity.ok(new TokenData (TokenJwt, refreshJwt));
+        }
+        catch (Exception ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+
     }
 
     @PostMapping("/refresh-token")

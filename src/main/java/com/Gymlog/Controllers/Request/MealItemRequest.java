@@ -1,7 +1,7 @@
 package com.Gymlog.Controllers.Request;
 
 public record MealItemRequest(
-        int quantity,
+        double quantity,
         Long food,
         Long meals
 ) {

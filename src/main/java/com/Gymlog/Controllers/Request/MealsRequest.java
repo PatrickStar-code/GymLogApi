@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 public record MealsRequest(
         LocalDateTime dateTime,
         MealType mealType,
-        int calories,
-        int proteins,
-        int carbs,
-        int fats,
+        double calories,
+        double proteins,
+        double carbs,
+        double fats,
         Long user
 ) {
 }

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class MealItemEntity {
     private Long id;
 
     @Column(nullable = false)
-    private int quantity;
+    private double quantity;
 
     @ManyToOne
     @JoinColumn(name = "food_id")

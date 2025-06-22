@@ -25,7 +25,11 @@ public class WorkoutPlanEntity {
     private String imageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
+
+    @OneToMany(mappedBy = "workoutPlan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<WorkoutExercisesEntity> workoutExercises;
+
 
 }
