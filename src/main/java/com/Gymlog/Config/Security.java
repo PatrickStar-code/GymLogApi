@@ -26,7 +26,7 @@ public class Security {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/refresh-token", "GymLog/users/register","GymLog/users/verify-user").permitAll()
+                        .requestMatchers( "/api/api-docs/**","/swagger/**","/login", "/refresh-token", "GymLog/users/register","GymLog/users/verify-user").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
