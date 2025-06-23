@@ -8,6 +8,8 @@ import com.Gymlog.Controllers.Response.UserResponse;
 import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Service.UserService;
 import com.Gymlog.SwaggerInterface.UserControllerInterface;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,9 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("GymLog/users")
+@Tag(name = "User"
+    , description = "User endpoints")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController implements UserControllerInterface {
 
     private final UserService userService;

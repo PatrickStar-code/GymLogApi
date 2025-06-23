@@ -1,10 +1,8 @@
 package com.Gymlog.Service;
 
 import com.Gymlog.Controllers.Response.ExerciseResponse;
-import com.Gymlog.Records.ExerciseApiWrapperResponse;
-import lombok.RequiredArgsConstructor;
+import com.Gymlog.Controllers.Response.ExerciseApiWrapperResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

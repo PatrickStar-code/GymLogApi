@@ -1,6 +1,4 @@
-package com.Gymlog.Records;
-
-import com.Gymlog.Controllers.Response.ExerciseResponse;
+package com.Gymlog.Controllers.Response;
 
 public record ExerciseApiWrapperResponse(
         boolean success,
