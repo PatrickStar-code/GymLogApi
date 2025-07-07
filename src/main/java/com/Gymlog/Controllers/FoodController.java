@@ -7,6 +7,7 @@ import com.Gymlog.Entity.FoodEntity;
 import com.Gymlog.Repository.FoodRepository;
 import com.Gymlog.Service.FoodService;
 import com.Gymlog.SwaggerInterface.FoodControllerInterface;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,10 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/GymLog/Food")
 @RequiredArgsConstructor
+@Tag(
+        name = "Food",
+        description = "Endpoints para gerenciamento de alimentos"
+)
 public class FoodController implements FoodControllerInterface {
 
     private final FoodService foodService;

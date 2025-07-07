@@ -3,11 +3,9 @@ package com.Gymlog.Controllers;
 import com.Gymlog.Controllers.Mapper.ProgressLogMapper;
 import com.Gymlog.Controllers.Request.ProgressLogRequest;
 import com.Gymlog.Controllers.Response.ProgressLogResponse;
-import com.Gymlog.Controllers.Response.UserResponse;
 import com.Gymlog.Entity.ProgressLogEntity;
-import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Service.ProgressLogService;
-import jakarta.validation.constraints.NotNull;
+import com.Gymlog.SwaggerInterface.ProgressLogControllerInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,42 +17,41 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/GymLog/progresslog")
 @RequiredArgsConstructor
-public class ProgressLogController {
+public class ProgressLogController implements ProgressLogControllerInterface {
 
     private final ProgressLogService progressLogService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProgressLogResponse> getProgressLogById(@PathVariable Long id) {
+
+
+    @Override
+    public ResponseEntity<ProgressLogResponse> getProgressLogById(Long id) {
         ProgressLogEntity progressLog = progressLogService.getProgressLogById(id);
         return ResponseEntity.ok(ProgressLogMapper.toProgressLogResponse(progressLog));
     }
 
-    @PostMapping("/")
-    public  ResponseEntity<ProgressLogResponse> createProgressLog(@RequestBody ProgressLogRequest progressLogRequest, @NotNull UriComponentsBuilder uriBuilder) {
+    @Override
+    public ResponseEntity<ProgressLogResponse> createProgressLog(ProgressLogRequest progressLogRequest, UriComponentsBuilder uriBuilder) {
         ProgressLogEntity response = progressLogService.createProgressLog(progressLogRequest);
         ProgressLogResponse progressLogResponse = ProgressLogMapper.toProgressLogResponse(response);
         return ResponseEntity.created(uriBuilder.path("/GymLog/progresslog/{id}").buildAndExpand(response.getId()).toUri()).body(progressLogResponse);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProgressLogResponse> updateProgressLog(@RequestBody ProgressLogRequest progressLogRequest , @PathVariable Long id) {
+    @Override
+    public ResponseEntity<ProgressLogResponse> updateProgressLog(ProgressLogRequest progressLogRequest, Long id) {
         Optional<ProgressLogEntity> response = progressLogService.updateProgressLog(progressLogRequest, id);
         if(response.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(ProgressLogMapper.toProgressLogResponse(response.get()));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProgressLog(@PathVariable Long id) {
+    @Override
+    public ResponseEntity<Void> deleteProgressLog(Long id) {
         progressLogService.deleteProgressLog(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/user")
-    public ResponseEntity<List<ProgressLogResponse>> getAllProgressLogByUser(@PathVariable Long id) {
-         Optional<List<ProgressLogEntity>> progressLog = progressLogService.findByUser(id);
-         if(progressLog.isEmpty()) return ResponseEntity.notFound().build();
-         return ResponseEntity.ok(progressLog.get().stream().map(ProgressLogMapper::toProgressLogResponse).toList());
-    }
-
-
+    @Override
+    public ResponseEntity<List<ProgressLogResponse>> getAllProgressLogByUser(Long id) {
+        Optional<List<ProgressLogEntity>> progressLog = progressLogService.findByUser(id);
+        if(progressLog.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(progressLog.get().stream().map(ProgressLogMapper::toProgressLogResponse).toList());    }
 }
