@@ -6,6 +6,7 @@ import com.Gymlog.Controllers.Response.FoodResponse;
 import com.Gymlog.Entity.FoodEntity;
 import com.Gymlog.Repository.FoodRepository;
 import com.Gymlog.Service.FoodService;
+import com.Gymlog.SwaggerInterface.FoodControllerInterface;
 import jakarta.validation.constraints.NotNull;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
@@ -26,41 +27,57 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/GymLog/Food")
 @RequiredArgsConstructor
-public class FoodController {
+public class FoodController implements FoodControllerInterface {
 
     private final FoodService foodService;
 
-    @GetMapping("/")
-    public ResponseEntity<List<FoodResponse>> getFoods(@RequestParam int page, @RequestParam int size) {
+    @Override
+    public ResponseEntity<List<FoodResponse>> getFoods() {
         List<FoodEntity> foods = foodService.getAllFoods();
 
         Stream foodResponseStream = foods.stream().map(FoodMapper::toFoodResponse);
 
         return ResponseEntity.ok(foodResponseStream.toList());
+
     }
 
-    @GetMapping("/{id}")
-    public  ResponseEntity<FoodResponse> getFoodById(@PathVariable Long id) {
+    @Override
+    public ResponseEntity<FoodResponse> getFoodById(Long id) {
         Optional<FoodEntity> food = foodService.getFoodById(id);
 
         if(food.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(FoodMapper.toFoodResponse(food.get()));
-    }
+        return ResponseEntity.ok(FoodMapper.toFoodResponse(food.get()));    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<FoodResponse> updateFood(@RequestBody FoodRequest foodRequest , @PathVariable Long id) {
+    @Override
+    public ResponseEntity<FoodResponse> updateFood(FoodRequest foodRequest, Long id) {
         Optional<FoodEntity> food = foodService.updateFood(id,foodRequest);
 
         if(food.isEmpty()){
             return  ResponseEntity.notFound().build();
         }
         return  ResponseEntity.ok(FoodMapper.toFoodResponse(food.get()));
+
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable long id){
+    @Override
+    public ResponseEntity<FoodResponse> saveFood(FoodRequest foodRequest, UriComponentsBuilder uriBuilder) {
+        FoodEntity foodEntity =  FoodMapper.toFoodEntity(foodRequest);
+        FoodEntity savedFood = foodService.save(foodEntity);
+        FoodResponse response = FoodMapper.toFoodResponse(savedFood);
+
+        return  ResponseEntity.created(uriBuilder.path("/GymLog/Food/{id}").buildAndExpand(savedFood.getId()).toUri()).body(response);    }
+
+    @Override
+    public ResponseEntity<Page<FoodResponse>> getFoodsByPage(int page, int size ) {
+        Page<FoodEntity> foods = foodService.getAllFoodsByPage(page, size);
+        Page<FoodResponse> foodResponseStream =  foods.map(FoodMapper::toFoodResponse);
+        return ResponseEntity.ok().body(foodResponseStream);
+    }
+
+    @Override
+    public ResponseEntity<Void> delete(long id) {
         Optional<FoodEntity> findFood = foodService.getFoodById(id);
 
         if(findFood.isEmpty()){
@@ -69,22 +86,4 @@ public class FoodController {
         foodService.deleteFood(id);
         return ResponseEntity.ok().build();
     }
-
-    @GetMapping("/byPage")
-    public ResponseEntity<Page<FoodResponse>> getFoodsByPage(@RequestParam int page, @RequestParam int size) {
-        Page<FoodEntity> foods = foodService.getAllFoodsByPage(page, size);
-        Page<FoodResponse> foodResponseStream =  foods.map(FoodMapper::toFoodResponse);
-        return ResponseEntity.ok().body(foodResponseStream);
-    }
-
-
-    @PostMapping("/")
-    public  ResponseEntity<FoodResponse> saveFood(@RequestBody FoodRequest foodRequest, @NotNull UriComponentsBuilder uriBuilder) {
-        FoodEntity foodEntity =  FoodMapper.toFoodEntity(foodRequest);
-        FoodEntity savedFood = foodService.save(foodEntity);
-        FoodResponse response = FoodMapper.toFoodResponse(savedFood);
-
-        return  ResponseEntity.created(uriBuilder.path("/GymLog/Food/{id}").buildAndExpand(savedFood.getId()).toUri()).body(response);
-    }
-
 }
