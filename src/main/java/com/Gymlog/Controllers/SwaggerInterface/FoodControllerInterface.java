@@ -1,4 +1,4 @@
-package com.Gymlog.SwaggerInterface;
+package com.Gymlog.Controllers.SwaggerInterface;
 
 import com.Gymlog.Controllers.Request.FoodRequest;
 import com.Gymlog.Controllers.Response.FoodResponse;

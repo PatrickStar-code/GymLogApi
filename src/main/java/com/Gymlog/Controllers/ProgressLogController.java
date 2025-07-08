@@ -5,7 +5,7 @@ import com.Gymlog.Controllers.Request.ProgressLogRequest;
 import com.Gymlog.Controllers.Response.ProgressLogResponse;
 import com.Gymlog.Entity.ProgressLogEntity;
 import com.Gymlog.Service.ProgressLogService;
-import com.Gymlog.SwaggerInterface.ProgressLogControllerInterface;
+import com.Gymlog.Controllers.SwaggerInterface.ProgressLogControllerInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

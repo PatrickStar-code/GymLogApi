@@ -8,6 +8,7 @@ import com.Gymlog.Service.MealsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +46,9 @@ public class MealsController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<MealsResponse> createMeals(@RequestBody MealsRequest mealsRequest) {
+    public ResponseEntity<MealsResponse> createMeals(@RequestBody MealsRequest mealsRequest, UriComponentsBuilder uriBuilder) {
         Optional<MealEntity> meal = mealsService.createMeals(mealsRequest);
-        return meal.map(MealsMapper::toMealsResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        var uri = uriBuilder.path("/{id}").buildAndExpand(meal.get().getId()).toUri();
+        return ResponseEntity.created(uri).body(MealsMapper.toMealsResponse(meal.get()));
     }
 }
