@@ -30,7 +30,10 @@ public interface FoodControllerInterface {
                             schema = @Schema(implementation = FoodResponse.class)))
     })
     @GetMapping("/")
-    ResponseEntity<List<FoodResponse>> getFoods();
+    ResponseEntity<?> getFoods(
+            @Parameter(description = "Número da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
+            @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size
+    );
 
     @Operation(
             summary = "Buscar alimento por ID",
@@ -87,20 +90,7 @@ public interface FoodControllerInterface {
             @NotNull UriComponentsBuilder uriBuilder
     );
 
-    @Operation(
-            summary = "Listar alimentos com paginação detalhada",
-            description = "Retorna uma página de alimentos usando paginação do Spring Data."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Página de alimentos retornada com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = FoodResponse.class)))
-    })
-    @GetMapping("/byPage")
-    ResponseEntity<Page<FoodResponse>> getFoodsByPage(
-            @Parameter(description = "Número da página", example = "0") @RequestParam int page,
-            @Parameter(description = "Tamanho da página", example = "10") @RequestParam int size
-    );
+
 
     @Operation(
             summary = "Deletar alimento",

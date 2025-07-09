@@ -29,7 +29,14 @@ public class FoodController implements FoodControllerInterface {
     private final FoodService foodService;
 
     @Override
-    public ResponseEntity<List<FoodResponse>> getFoods() {
+    public ResponseEntity<?> getFoods(int page, int size) {
+
+        if(page >= 0 && size > 0) {
+            Page<FoodEntity> foods = foodService.getAllFoodsByPage(page, size);
+            Page<FoodResponse> foodResponseStream =  foods.map(FoodMapper::toFoodResponse);
+            return ResponseEntity.ok().body(foodResponseStream);
+        }
+
         List<FoodEntity> foods = foodService.getAllFoods();
 
         Stream foodResponseStream = foods.stream().map(FoodMapper::toFoodResponse);
@@ -66,12 +73,6 @@ public class FoodController implements FoodControllerInterface {
 
         return  ResponseEntity.created(uriBuilder.path("/GymLog/Food/{id}").buildAndExpand(savedFood.getId()).toUri()).body(response);    }
 
-    @Override
-    public ResponseEntity<Page<FoodResponse>> getFoodsByPage(int page, int size ) {
-        Page<FoodEntity> foods = foodService.getAllFoodsByPage(page, size);
-        Page<FoodResponse> foodResponseStream =  foods.map(FoodMapper::toFoodResponse);
-        return ResponseEntity.ok().body(foodResponseStream);
-    }
 
     @Override
     public ResponseEntity<Void> delete(long id) {
