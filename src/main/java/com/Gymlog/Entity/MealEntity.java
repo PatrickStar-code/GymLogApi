@@ -2,6 +2,7 @@ package com.Gymlog.Entity;
 
 import com.Gymlog.Enums.MealType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class MealEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
@@ -29,14 +31,19 @@ public class MealEntity {
     @Enumerated(EnumType.STRING)
     private MealType mealType;
 
+
     @Column(nullable = false)
     private double calories;
+
 
     @Column(nullable = false)
     private double proteins;
 
+
     @Column(nullable = false)
     private double carbs;
+
+
 
     @Column(nullable = false)
     private double fats;

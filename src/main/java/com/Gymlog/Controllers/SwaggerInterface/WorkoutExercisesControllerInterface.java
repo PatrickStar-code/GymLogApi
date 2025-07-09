@@ -107,4 +107,6 @@ public interface WorkoutExercisesControllerInterface {
             @Parameter(description = "Dados atualizados do exercício")
             WorkoutExercicesRequest workoutExercicesRequest
     );
+
+
 }
