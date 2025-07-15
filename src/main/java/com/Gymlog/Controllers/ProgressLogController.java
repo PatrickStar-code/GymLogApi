@@ -7,6 +7,9 @@ import com.Gymlog.Entity.ProgressLogEntity;
 import com.Gymlog.Service.ProgressLogService;
 import com.Gymlog.Controllers.SwaggerInterface.ProgressLogControllerInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -50,8 +53,19 @@ public class ProgressLogController implements ProgressLogControllerInterface {
     }
 
     @Override
-    public ResponseEntity<List<ProgressLogResponse>> getAllProgressLogByUser(Long id) {
-        Optional<List<ProgressLogEntity>> progressLog = progressLogService.findByUser(id);
+    public ResponseEntity<Page<ProgressLogResponse>> getAllProgressLogByUser(Long id, int page, int size) {
+        List<ProgressLogEntity> progressLog = progressLogService.findByUser(id);
         if(progressLog.isEmpty()) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(progressLog.get().stream().map(ProgressLogMapper::toProgressLogResponse).toList());    }
+        if(page >= 0 && size > 0) {
+            Page<ProgressLogEntity> progressLogs = progressLogService.getAllProgressLogByUserPage(page, size, id);
+            Page<ProgressLogResponse> progressLogResponseStream =  progressLogs.map(ProgressLogMapper::toProgressLogResponse);
+            return ResponseEntity.ok().body(progressLogResponseStream);
+        }
+        List<ProgressLogEntity> progressLogs = progressLogService.findByUser(id);
+        List<ProgressLogResponse> response = progressLogs.stream().map(ProgressLogMapper::toProgressLogResponse).toList();
+        PageImpl<ProgressLogResponse> progressLogResponsePage = new PageImpl<>(response, PageRequest.of(0,progressLogs.size() > 0 ? progressLogs.size() : 1),progressLogs.size() > 0 ? progressLogs.size() : 1);
+        return ResponseEntity.ok(progressLogResponsePage);
+    }
+
+
 }

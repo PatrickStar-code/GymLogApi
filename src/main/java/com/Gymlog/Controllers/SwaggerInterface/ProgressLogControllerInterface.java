@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -91,7 +92,10 @@ public interface ProgressLogControllerInterface {
                             schema = @Schema(implementation = ProgressLogResponse.class)))
     })
     @GetMapping("/{id}/user")
-    ResponseEntity<List<ProgressLogResponse>> getAllProgressLogByUser(
-            @Parameter(description = "ID do usuário", example = "1") @PathVariable Long id
+    ResponseEntity<Page<ProgressLogResponse>> getAllProgressLogByUser(
+            @Parameter(description = "ID do usuário", example = "1") @PathVariable Long id,
+            @Parameter(description = "Número da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
+            @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size
+
     );
 }

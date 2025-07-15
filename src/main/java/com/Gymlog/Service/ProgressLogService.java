@@ -8,6 +8,8 @@ import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Repository.ProgressLogRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,14 +68,22 @@ public class ProgressLogService {
         return Optional.empty();
     }
 
-    public Optional<List<ProgressLogEntity>> findByUser(Long id) {
+    public List<ProgressLogEntity> findByUser(Long id) {
         UserEntity user = findUser(id);
+        if(user == null) throw new NotFoundException("NOT_FOUND", "Usuario nao encontrado!");
         return repository.findByUser(user);
     }
+
 
     private UserEntity findUser(Long id) {
       Optional<UserEntity> user = userService.getUser(id);
       if(user.isEmpty()) throw new NotFoundException("NOT_FOUND", "Usuario nao encontrado!");
         return user.get();
+    }
+
+    public Page<ProgressLogEntity> getAllProgressLogByUserPage(int page, int size, Long id) {
+        UserEntity user = findUser(id);
+        return repository.findByUser(user, PageRequest.of(page, size));
+
     }
 }
