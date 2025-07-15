@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -26,7 +27,9 @@ public interface MealControllerInterface {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = MealsResponse.class)))
     @GetMapping("/")
-    ResponseEntity<List<MealsResponse>> getMeals();
+
+    ResponseEntity<Page<MealsResponse>> getMeals(@Parameter(description = "Número da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
+                                                 @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size);
 
     @Operation(
             summary = "Buscar refeição por ID",

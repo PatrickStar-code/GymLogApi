@@ -9,6 +9,8 @@ import com.Gymlog.Controllers.SwaggerInterface.FoodControllerInterface;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,7 +31,7 @@ public class FoodController implements FoodControllerInterface {
     private final FoodService foodService;
 
     @Override
-    public ResponseEntity<?> getFoods(int page, int size) {
+    public ResponseEntity<Page<FoodResponse>> getFoods(int page, int size) {
 
         if(page >= 0 && size > 0) {
             Page<FoodEntity> foods = foodService.getAllFoodsByPage(page, size);
@@ -39,9 +41,9 @@ public class FoodController implements FoodControllerInterface {
 
         List<FoodEntity> foods = foodService.getAllFoods();
 
-        Stream foodResponseStream = foods.stream().map(FoodMapper::toFoodResponse);
-
-        return ResponseEntity.ok(foodResponseStream.toList());
+        Stream<FoodResponse> foodResponseStream = foods.stream().map(FoodMapper::toFoodResponse);
+        PageImpl<FoodResponse> foodResponsePage = new PageImpl<>(foodResponseStream.toList(), PageRequest.of(0,foods.size() > 0 ? foods.size() : 1),foods.size() > 0 ? foods.size() : 1);
+        return ResponseEntity.ok(foodResponsePage);
 
     }
 

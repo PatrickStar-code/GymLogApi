@@ -7,12 +7,16 @@ import com.Gymlog.Controllers.SwaggerInterface.MealControllerInterface;
 import com.Gymlog.Entity.MealEntity;
 import com.Gymlog.Service.MealsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/GymLog/meals")
@@ -21,10 +25,18 @@ public class MealsController implements MealControllerInterface {
 
     private final MealsService mealsService;
 
+
     @Override
-    public ResponseEntity<List<MealsResponse>> getMeals() {
+    public ResponseEntity<Page<MealsResponse>> getMeals(int page, int size) {
+        if(page >= 0 && size > 0) {
+            Page<MealEntity> meals = mealsService.getAllMealsByPage(page, size);
+            Page<MealsResponse> mealsResponseStream =  meals.map(MealsMapper::toMealsResponse);
+            return ResponseEntity.ok().body(mealsResponseStream);
+        }
         List<MealEntity> meals = mealsService.getMeals();
-        return ResponseEntity.ok(meals.stream().map(MealsMapper::toMealsResponse).toList());
+        Stream<MealsResponse> mealsResponseStream = meals.stream().map(MealsMapper::toMealsResponse);
+        PageImpl<MealsResponse> mealsResponsePage = new PageImpl<>(mealsResponseStream.toList(), PageRequest.of(0,meals.size() > 0 ? meals.size() : 1),  meals.size() > 0 ? meals.size() : 1);
+        return ResponseEntity.ok(mealsResponsePage);
     }
 
     @Override

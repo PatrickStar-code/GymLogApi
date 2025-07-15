@@ -7,6 +7,8 @@ import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Repository.MealsRepository;
 import com.Gymlog.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,5 +66,9 @@ public class MealsService {
 
         mealsRepository.save(mealEntity);
         return Optional.of(mealEntity);
+    }
+
+    public Page<MealEntity> getAllMealsByPage(int page, int size) {
+        return mealsRepository.findAll(PageRequest.of(page, size));
     }
 }

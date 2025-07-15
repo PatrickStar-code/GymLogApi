@@ -30,7 +30,7 @@ public interface FoodControllerInterface {
                             schema = @Schema(implementation = FoodResponse.class)))
     })
     @GetMapping("/")
-    ResponseEntity<?> getFoods(
+    ResponseEntity<Page<FoodResponse>> getFoods(
             @Parameter(description = "Número da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
             @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size
     );
