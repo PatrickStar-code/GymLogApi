@@ -8,12 +8,16 @@ import com.Gymlog.Entity.WorkoutPlanEntity;
 import com.Gymlog.Repository.WorkoutPlanRepository;
 import com.Gymlog.Service.WorkoutPlanService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/GymLog/workoutPlan")
@@ -24,10 +28,16 @@ public class WorkoutPlanController implements WorkoutPlanControllerInterface {
 
 
     @Override
-    public ResponseEntity<List<WorkoutPlanResponse>> getWorkoutPlan() {
-        List<WorkoutPlanEntity> workoutPlanEntity = service.findAll();
-        List<WorkoutPlanResponse> workoutPlanResponses = workoutPlanEntity.stream().map(WorkoutPlanMapper::toWorkoutPlanResponse).toList();
-        return ResponseEntity.ok(workoutPlanResponses);
+    public ResponseEntity<Page<WorkoutPlanResponse>> getWorkoutPlan(int page, int size) {
+        if(page >= 0 && size > 0) {
+            Page<WorkoutPlanEntity> workoutPlans = service.getAllWorkoutPlanByPage(page, size);
+            Page<WorkoutPlanResponse> workoutPlanResponseStream =  workoutPlans.map(WorkoutPlanMapper::toWorkoutPlanResponse);
+            return ResponseEntity.ok().body(new PageImpl<>(workoutPlanResponseStream.toList(), PageRequest.of(page, size),workoutPlans.getTotalElements()));
+        }
+        List<WorkoutPlanEntity> workoutPlans = service.findAll();
+        List<WorkoutPlanResponse> workoutPlanResponseStream = workoutPlans.stream().map(WorkoutPlanMapper::toWorkoutPlanResponse).toList();
+        PageImpl<WorkoutPlanResponse> workoutPlanResponsePage = new PageImpl<>(workoutPlanResponseStream, PageRequest.of(0,workoutPlans.size() > 0 ? workoutPlans.size() : 1),workoutPlans.size() > 0 ? workoutPlans.size() : 1);
+        return ResponseEntity.ok(workoutPlanResponsePage);
     }
 
     @Override
@@ -49,11 +59,18 @@ public class WorkoutPlanController implements WorkoutPlanControllerInterface {
     }
 
     @Override
-    public ResponseEntity<List<WorkoutPlanResponse>> getWorkoutPlanByUser(Long id) {
-        List<WorkoutPlanEntity> workoutPlanEntity = service.findByUser(id);
-        List<WorkoutPlanResponse> workoutPlanResponses = workoutPlanEntity.stream().map(WorkoutPlanMapper::toWorkoutPlanResponse).toList();
-        return ResponseEntity.ok(workoutPlanResponses);
+    public ResponseEntity<Page<WorkoutPlanResponse>> getWorkoutPlanByUser(Long id, int page, int size) {
+        if(page >= 0 && size > 0) {
+            Page<WorkoutPlanEntity> workoutPlans = service.getAllWorkoutPlanUserByPage(page, size,id);
+            Page<WorkoutPlanResponse> workoutPlanResponseStream =  workoutPlans.map(WorkoutPlanMapper::toWorkoutPlanResponse);
+            return ResponseEntity.ok().body(new PageImpl<>(workoutPlanResponseStream.toList(), PageRequest.of(page, size),workoutPlans.getTotalElements()));
+        }
+        List<WorkoutPlanEntity> workoutPlans = service.findByUser(id);
+        List<WorkoutPlanResponse> workoutPlanResponseStream = workoutPlans.stream().map(WorkoutPlanMapper::toWorkoutPlanResponse).toList();
+        PageImpl<WorkoutPlanResponse> workoutPlanResponsePage = new PageImpl<>(workoutPlanResponseStream, PageRequest.of(0,workoutPlans.size() > 0 ? workoutPlans.size() : 1),workoutPlans.size() > 0 ? workoutPlans.size() : 1);
+        return ResponseEntity.ok(workoutPlanResponsePage);
     }
+
 
     @Override
     public ResponseEntity<WorkoutPlanResponse> createWorkoutPlan(WorkoutPlanRequest workoutPlanRequest, UriComponentsBuilder uriBuilder) {

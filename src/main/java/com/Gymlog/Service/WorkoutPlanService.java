@@ -10,6 +10,8 @@ import com.Gymlog.Repository.UserRepository;
 import com.Gymlog.Repository.WorkoutPlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,5 +64,14 @@ public class WorkoutPlanService {
     public List<WorkoutPlanEntity> findByUser(Long id) {
         UserEntity user = userRepository.findById(id).orElseThrow( () -> new NotFoundException("NOT_FOUND", "Usuário nao encontrado!"));
         return repository.findByUser(user);
+    }
+
+    public Page<WorkoutPlanEntity> getAllWorkoutPlanByPage(int page, int size) {
+        return repository.findAll(PageRequest.of(page, size));
+    }
+
+    public Page<WorkoutPlanEntity> getAllWorkoutPlanUserByPage(int page, int size, Long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow( () -> new NotFoundException("NOT_FOUND", "Usuário nao encontrado!"));
+        return repository.findByUser(user, PageRequest.of(page, size));
     }
 }
