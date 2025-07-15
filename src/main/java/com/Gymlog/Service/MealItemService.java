@@ -12,6 +12,8 @@ import com.Gymlog.Repository.MealItemRepository;
 import com.Gymlog.Repository.MealsRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -87,4 +89,7 @@ public class MealItemService {
     private Optional<FoodEntity> getFood(Long id) { return foodRepository.findById(id);}
 
 
+    public Page<MealItemEntity> getAllMealItemsByPage(int page, int size) {
+        return repository.findAll(PageRequest.of(page, size));
+    }
 }
