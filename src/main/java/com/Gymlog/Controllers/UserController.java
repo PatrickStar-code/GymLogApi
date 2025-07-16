@@ -55,7 +55,57 @@ public class UserController implements UserControllerInterface {
     @Override
     public ResponseEntity<String> verifyEmail(String code) {
         userService.verifyEmail(code);
-        return ResponseEntity.ok("User verified with success");
+         var html = "<!DOCTYPE html>\n" +
+                 "<html lang=\"en\">\n" +
+                 "<head>\n" +
+                 "  <meta charset=\"UTF-8\">\n" +
+                 "  <title>User Verified</title>\n" +
+                 "  <style>\n" +
+                 "    body {\n" +
+                 "      background: linear-gradient(135deg, #4CAF50, #2E7D32);\n" +
+                 "      font-family: Arial, sans-serif;\n" +
+                 "      display: flex;\n" +
+                 "      justify-content: center;\n" +
+                 "      align-items: center;\n" +
+                 "      height: 100vh;\n" +
+                 "      margin: 0;\n" +
+                 "    }\n" +
+                 "\n" +
+                 "    .container {\n" +
+                 "      background-color: #ffffffdd;\n" +
+                 "      padding: 40px 60px;\n" +
+                 "      border-radius: 12px;\n" +
+                 "      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);\n" +
+                 "      text-align: center;\n" +
+                 "    }\n" +
+                 "\n" +
+                 "    h1 {\n" +
+                 "      color: #2E7D32;\n" +
+                 "      font-size: 32px;\n" +
+                 "      margin-bottom: 20px;\n" +
+                 "    }\n" +
+                 "\n" +
+                 "    p {\n" +
+                 "      font-size: 18px;\n" +
+                 "      color: #333;\n" +
+                 "    }\n" +
+                 "\n" +
+                 "    .checkmark {\n" +
+                 "      font-size: 60px;\n" +
+                 "      color: #4CAF50;\n" +
+                 "      margin-bottom: 20px;\n" +
+                 "    }\n" +
+                 "  </style>\n" +
+                 "</head>\n" +
+                 "<body>\n" +
+                 "  <div class=\"container\">\n" +
+                 "    <div class=\"checkmark\">✔\uFE0F</div>\n" +
+                 "    <h1>User Verified</h1>\n" +
+                 "    <p>User verified with success</p>\n" +
+                 "  </div>\n" +
+                 "</body>\n" +
+                 "</html>";
+        return ResponseEntity.ok(html);
     }
 
     @Override
