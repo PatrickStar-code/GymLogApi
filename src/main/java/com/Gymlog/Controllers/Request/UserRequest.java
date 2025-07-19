@@ -69,6 +69,10 @@ public record UserRequest(
         boolean isActive,
 
         @Schema(description = "Data da última atualização do usuário (gerenciada pelo sistema)", example = "2024-06-21T12:00:00")
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+
+        @Schema(description = "Role do usuário", example = "USER")
+        String role
+
 ) {
 }

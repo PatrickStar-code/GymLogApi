@@ -1,5 +1,6 @@
 package com.Gymlog.Config;
 
+import com.Gymlog.Handler.CustomAcessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.AccessDeniedHandler;
+
 
 @Configuration
 @EnableWebSecurity
@@ -21,14 +24,29 @@ public class Security {
     private final FilterTokenJWT filter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAcessDeniedHandler accessDeniedHandler) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/api/api-docs/**","/swagger/**","/login", "/refresh-token", "GymLog/users/register","GymLog/users/verify-user").permitAll()
+
+                        //User
+                        // /Food
+                        .requestMatchers("/GymLog/Food/","GET").hasRole("USER")
+                        .requestMatchers("/GymLog/Food/{id}","GET").hasRole("USER")
+
+                        // /Admin
+                        // /User
+                        .requestMatchers("/GymLog/users/{id}","DELETE").hasRole("ADMIN")
+
+
                         .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 

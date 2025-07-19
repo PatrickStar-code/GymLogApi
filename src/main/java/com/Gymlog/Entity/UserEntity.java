@@ -4,6 +4,7 @@ import com.Gymlog.Controllers.Request.UserRequest;
 import com.Gymlog.Enums.ActivyLevel;
 import com.Gymlog.Enums.GenderEnum;
 import com.Gymlog.Enums.Goal;
+import com.Gymlog.Enums.RolesEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
@@ -60,6 +62,10 @@ public class UserEntity implements UserDetails {
 
     @Column( nullable = false)
     private int age;
+
+    @Column( nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RolesEnum role;
 
     @Column( nullable = false)
     @Enumerated(EnumType.STRING)
@@ -126,6 +132,7 @@ public class UserEntity implements UserDetails {
         this.deletedAt = null;
         this.verified = false;
         this.verificationToken = UUID.randomUUID().toString();
+        this.role = dados.role() == null ? RolesEnum.USER : RolesEnum.valueOf(dados.role());
         this.tokenExpirationDate = LocalDateTime.now().plusMinutes(30);
     }
 
@@ -141,7 +148,13 @@ public class UserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if(role == RolesEnum.ADMIN){
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        else{
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+
     }
 
     @Override

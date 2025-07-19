@@ -56,7 +56,10 @@ public record UserResponse(
         boolean isActive,
 
         @Schema(description = "Data da última atualização do usuário", example = "2025-06-22T15:59:30.145856")
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+
+        @Schema(description = "Role do usuário", example = "USER")
+        String role
 
 ) {
 }
