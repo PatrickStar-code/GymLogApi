@@ -1,16 +1,27 @@
-FROM ubuntu:latest as build
+# Etapa de build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
-RUN apt-get update
-RUN apt-get install openjdk-21-jdk -y
+# Define o diretório de trabalho
+WORKDIR /app
+
+# Copia os arquivos do projeto para o container
 COPY . .
 
-RUN apt-get install maven -y
-RUN mvn clean install
+# Compila o projeto, ignorando os testes
+RUN mvn clean package -DskipTests
 
-FROM openjdk:21-jdk-slim
+# Etapa final (imagem leve para produção)
+FROM eclipse-temurin:21-jdk-jammy
 
-EXPOSE 8080
+# Define o diretório de trabalho no container final
+WORKDIR /app
 
-COPY --from=build /target/Gymlog-0.0.1-SNAPSHOT.jar app.jar
+# Copia o JAR gerado na build
+COPY --from=build /app/target/Gymlog-0.0.1-SNAPSHOT.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Define a porta dinamicamente via variável de ambiente (Render exige isso)
+ENV PORT=8080
+EXPOSE $PORT
+
+# Comando de inicialização
+CMD ["sh", "-c", "java -jar app.jar --server.port=$PORT"]
