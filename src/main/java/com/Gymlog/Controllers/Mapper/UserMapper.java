@@ -3,6 +3,7 @@ package com.Gymlog.Controllers.Mapper;
 import com.Gymlog.Controllers.Request.UserRequest;
 import com.Gymlog.Controllers.Response.UserResponse;
 import com.Gymlog.Entity.UserEntity;
+import com.Gymlog.Enums.RolesEnum;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -25,6 +26,7 @@ public class UserMapper {
                 .avatarUrl(userEntity.getAvatarUrl())
                 .isActive(userEntity.isActive())
                 .updatedAt(userEntity.getUpdatedAt())
+                .role(userEntity.getRole().name())
                 .build();
     }
 
@@ -45,6 +47,7 @@ public class UserMapper {
                 .avatarUrl(userRequest.avatarUrl())
                 .isActive(userRequest.isActive())
                 .updatedAt(userRequest.updatedAt())
+                .role(RolesEnum.valueOf(userRequest.role()) == null ? RolesEnum.USER : RolesEnum.valueOf(userRequest.role()))
                 .build();
     }
 }

@@ -185,4 +185,6 @@ public class UserEntity implements UserDetails {
         this.verificationToken = null;
         this.tokenExpirationDate = null;
     }
+
+
 }

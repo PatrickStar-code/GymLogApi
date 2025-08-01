@@ -35,6 +35,8 @@ public class Security {
                         // /Food
                         .requestMatchers("/GymLog/Food/","GET").hasRole("USER")
                         .requestMatchers("/GymLog/Food/{id}","GET").hasRole("USER")
+                        .requestMatchers("/GymLog/users/{id}","GET").hasRole("USER")
+
 
                         // /Admin
                         // /User
