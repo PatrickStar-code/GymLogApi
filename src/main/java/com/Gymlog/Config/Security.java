@@ -43,7 +43,7 @@ public class Security {
                         .requestMatchers("/GymLog/users/{id}","DELETE").hasRole("ADMIN")
 
 
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()   )
                 .exceptionHandling(ex -> ex
                         .accessDeniedHandler(accessDeniedHandler)
                 )

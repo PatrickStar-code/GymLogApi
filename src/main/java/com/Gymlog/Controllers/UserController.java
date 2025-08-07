@@ -116,6 +116,7 @@ public class UserController implements UserControllerInterface {
 
     @Override
     public ResponseEntity<UserResponse> getUser(Long id) {
+
         Optional<UserEntity> user = userService.getUser(id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
