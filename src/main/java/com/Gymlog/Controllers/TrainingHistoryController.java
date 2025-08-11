@@ -1,10 +1,18 @@
 package com.Gymlog.Controllers;
 
+import com.Gymlog.Controllers.Mapper.TrainingHistoryMapper;
+import com.Gymlog.Controllers.Request.TrainingHistoryRequest;
+import com.Gymlog.Controllers.Response.TrainingHistoryResponse;
+import com.Gymlog.Entity.TrainingHistoryEntity;
 import com.Gymlog.Service.TrainingHistoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RestController
@@ -13,6 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrainingHistoryController {
 
  private  final TrainingHistoryService trainingHistoryService;
+
+ @PostMapping("/saveTrainingHistory")
+ public ResponseEntity<TrainingHistoryResponse> saveTrainingHistory(@RequestBody TrainingHistoryRequest trainingHistory, UriComponentsBuilder uriBuilder) {
+    TrainingHistoryEntity trainingHistoryEntity = trainingHistoryService.saveTrainingHistory(trainingHistory);
+    TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity);
+    return ResponseEntity.created(uriBuilder.path("/Gymlog/trainingHistory/{id}").buildAndExpand(trainingHistoryResponse.id()).toUri()).body(trainingHistoryResponse);
+
+
+
+ }
 
 
 
