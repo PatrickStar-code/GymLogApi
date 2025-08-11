@@ -1,11 +1,13 @@
 package com.Gymlog.Entity;
 
+import com.Gymlog.Enums.StatusEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDateTime;
 
@@ -32,4 +34,11 @@ public class TrainingHistoryEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
+
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
+
+    private String comment;
+
+
 }

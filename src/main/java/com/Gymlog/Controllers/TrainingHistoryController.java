@@ -3,8 +3,14 @@ package com.Gymlog.Controllers;
 import com.Gymlog.Controllers.Mapper.TrainingHistoryMapper;
 import com.Gymlog.Controllers.Request.TrainingHistoryRequest;
 import com.Gymlog.Controllers.Response.TrainingHistoryResponse;
+import com.Gymlog.Controllers.SwaggerInterface.TrainingHistoryInterface;
 import com.Gymlog.Entity.TrainingHistoryEntity;
 import com.Gymlog.Service.TrainingHistoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,20 +24,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping("/Gymlog/trainingHistory")
 @RequiredArgsConstructor
-public class TrainingHistoryController {
+public class TrainingHistoryController implements TrainingHistoryInterface {
 
- private  final TrainingHistoryService trainingHistoryService;
+ private  final TrainingHistoryService trainingHistoryService ;
 
- @PostMapping("/saveTrainingHistory")
- public ResponseEntity<TrainingHistoryResponse> saveTrainingHistory(@RequestBody TrainingHistoryRequest trainingHistory, UriComponentsBuilder uriBuilder) {
-    TrainingHistoryEntity trainingHistoryEntity = trainingHistoryService.saveTrainingHistory(trainingHistory);
-    TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity);
-    return ResponseEntity.created(uriBuilder.path("/Gymlog/trainingHistory/{id}").buildAndExpand(trainingHistoryResponse.id()).toUri()).body(trainingHistoryResponse);
-
-
-
- }
-
-
-
+    @Override
+    public ResponseEntity<TrainingHistoryResponse> saveTrainingHistory(TrainingHistoryRequest trainingHistory, UriComponentsBuilder uriBuilder) {
+        TrainingHistoryEntity trainingHistoryEntity = trainingHistoryService.saveTrainingHistory(trainingHistory);
+        TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity);
+        return ResponseEntity.created(uriBuilder.path("/Gymlog/trainingHistory/{id}").buildAndExpand(trainingHistoryResponse.id()).toUri()).body(trainingHistoryResponse);
+    }
 }
