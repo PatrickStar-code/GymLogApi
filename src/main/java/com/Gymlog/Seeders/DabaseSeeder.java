@@ -40,9 +40,30 @@ import java.util.ArrayList;
             try (InputStreamReader reader = new InputStreamReader(
                     getClass().getResourceAsStream("/Json/food.json"))) {
 
+
+                if (reader == null) {
+                    throw new FileNotFoundException("❌ Arquivo /Json/food.json não encontrado no classpath!");
+                }
+
+
                 JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
+
+                if (!jsonObject.has("food")) {
+                    throw new IllegalArgumentException("❌ O JSON não contém a chave 'food'.");
+                }
+
                 Type listType = new TypeToken<ArrayList<FoodEntity>>() {}.getType();
                 ArrayList<FoodEntity> foods = gson.fromJson(jsonObject.getAsJsonArray("food"), listType);
+
+                if (foods == null || foods.isEmpty()) {
+                    throw new IllegalArgumentException("❌ Lista de alimentos está vazia ou nula.");
+                }
+
+                for (FoodEntity food : foods) {
+                    if (food == null) {
+                        throw new IllegalArgumentException("❌ Encontrado objeto null na lista de alimentos.");
+                    }
+                }
 
                 foodRepository.saveAll(foods);
                 System.out.println("✅ Food table seeded!");

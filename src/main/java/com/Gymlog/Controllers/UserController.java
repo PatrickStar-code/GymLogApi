@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,6 +34,8 @@ public class UserController implements UserControllerInterface {
         var uri = uriBuilder.path("/{id}").buildAndExpand(usuario.getUserId()).toUri();
         return ResponseEntity.created(uri).body(UserMapper.toUserResponse(usuario));
     }
+
+
 
     @Override
     public ResponseEntity<UserResponse> updateIsActive(Long id) {
@@ -120,6 +123,14 @@ public class UserController implements UserControllerInterface {
         Optional<UserEntity> user = userService.getUser(id);
         return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @Override
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserEntity> users = userService.getAllUsers();
+        List<UserResponse> response = users.stream().map(UserMapper::toUserResponse).toList();
+        return ResponseEntity.ok(response);    }
+
+
 }
 
 

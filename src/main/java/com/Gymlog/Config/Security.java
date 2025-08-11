@@ -41,6 +41,7 @@ public class Security {
                         // /Admin
                         // /User
                         .requestMatchers("/GymLog/users/{id}","DELETE").hasRole("ADMIN")
+                        .requestMatchers("/GymLog/users/","GET").hasRole("ADMIN")
 
 
                         .anyRequest().authenticated()   )

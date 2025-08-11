@@ -20,6 +20,6 @@
 		"verified" : true,
 		"verification_token" : null,
 		"verification_token_expiration_date" : null,
-		"role" : "USER"
+		"role" : "ADMIN"
 	}
 ]}

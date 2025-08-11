@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @Tag(name = "Usuário", description = "Operações relacionadas aos usuários")
 public interface UserControllerInterface {
 
@@ -36,6 +38,18 @@ public interface UserControllerInterface {
             @Parameter(description = "ID do usuário", example = "1")
             @PathVariable Long id
     );
+
+    @Operation(
+            summary = "Buscar usuários",
+            description = "Retorna uma lista de usuários cadastrados no sistema."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuários encontrados",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserResponse.class))),
+    })
+    @GetMapping("/")
+    ResponseEntity<List<UserResponse>> getAllUsers();
 
     @Operation(
             summary = "Registrar novo usuário",
