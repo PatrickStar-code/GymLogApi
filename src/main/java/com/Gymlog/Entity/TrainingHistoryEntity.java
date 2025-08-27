@@ -25,12 +25,10 @@ public class TrainingHistoryEntity {
     @NotBlank
     private LocalDateTime  ocurrenceDate;
 
-    @NotBlank
     @ManyToOne
     @JoinColumn(name = "workout_plan_id")
     private WorkoutPlanEntity workoutPlanEntity;
 
-    @NotBlank
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;

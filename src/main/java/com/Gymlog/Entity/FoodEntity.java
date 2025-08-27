@@ -3,6 +3,7 @@ package com.Gymlog.Entity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,30 +24,30 @@ public class FoodEntity {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank
+    @NotNull
     private String foodName;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private double calories;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private double proteins;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private double carbs;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private double fibers;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private double fats;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private double grams;
 
