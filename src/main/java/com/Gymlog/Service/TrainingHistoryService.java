@@ -22,6 +22,7 @@ public class  TrainingHistoryService {
             throw new IllegalArgumentException("Workout plan cannot be null");
         }
 
+
         if(trainingHistory.userId() == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
@@ -36,6 +37,6 @@ public class  TrainingHistoryService {
             throw new IllegalArgumentException("User not found");
         }
 
-        return trainingHistoryRepository.save(TrainingHistoryMapper.toTrainingHistoryEntity(trainingHistory));
+        return trainingHistoryRepository.save(TrainingHistoryMapper.toTrainingHistoryEntity(trainingHistory, user, workoutPlan));
     }
 }

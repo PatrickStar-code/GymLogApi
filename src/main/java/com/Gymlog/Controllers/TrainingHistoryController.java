@@ -22,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RestController
-@RequestMapping("/Gymlog/trainingHistory")
+@RequestMapping("/GymLog/trainingHistory")
 @RequiredArgsConstructor
 public class TrainingHistoryController implements TrainingHistoryInterface {
 
@@ -30,6 +30,7 @@ public class TrainingHistoryController implements TrainingHistoryInterface {
 
     @Override
     public ResponseEntity<TrainingHistoryResponse> saveTrainingHistory(TrainingHistoryRequest trainingHistory, UriComponentsBuilder uriBuilder) {
+        System.out.println("trainingHistory = " + trainingHistory);
         TrainingHistoryEntity trainingHistoryEntity = trainingHistoryService.saveTrainingHistory(trainingHistory);
         TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity);
         return ResponseEntity.created(uriBuilder.path("/Gymlog/trainingHistory/{id}").buildAndExpand(trainingHistoryResponse.id()).toUri()).body(trainingHistoryResponse);

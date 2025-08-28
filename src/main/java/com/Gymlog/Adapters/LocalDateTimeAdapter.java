@@ -23,8 +23,6 @@ public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, Json
             dateStr = dateStr.substring(0, dateStr.length() - 1);
         }
 
-        // Também remove os milissegundos, se quiser (opcional)
-        // Ou deixe como está para aceitar fração de segundos
 
         return LocalDateTime.parse(dateStr);
     }
