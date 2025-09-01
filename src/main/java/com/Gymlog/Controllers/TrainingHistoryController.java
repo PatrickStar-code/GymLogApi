@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Controller
 @RestController
@@ -30,9 +36,49 @@ public class TrainingHistoryController implements TrainingHistoryInterface {
 
     @Override
     public ResponseEntity<TrainingHistoryResponse> saveTrainingHistory(TrainingHistoryRequest trainingHistory, UriComponentsBuilder uriBuilder) {
-        System.out.println("trainingHistory = " + trainingHistory);
         TrainingHistoryEntity trainingHistoryEntity = trainingHistoryService.saveTrainingHistory(trainingHistory);
+        System.out.println(trainingHistoryEntity);
         TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity);
         return ResponseEntity.created(uriBuilder.path("/Gymlog/trainingHistory/{id}").buildAndExpand(trainingHistoryResponse.id()).toUri()).body(trainingHistoryResponse);
     }
+
+    @Override
+    public ResponseEntity<Page<TrainingHistoryResponse>> getTrainingHistory(int page, int size) {
+        if(page>=0 && size>0) {
+            Page<TrainingHistoryEntity> trainingHistory = trainingHistoryService.getAllTrainingHistoryByPage(page, size);
+            Page<TrainingHistoryResponse> trainingHistoryResponse = trainingHistory.map(TrainingHistoryMapper::toTrainingHistoryResponse);
+            return ResponseEntity.ok().body(trainingHistoryResponse);
+        }
+        List<TrainingHistoryEntity> trainingHistoryEntity = trainingHistoryService.getAllTrainingHistory();
+        Stream<TrainingHistoryResponse> trainingHistoryResponse = trainingHistoryEntity.stream().map(TrainingHistoryMapper::toTrainingHistoryResponse);
+        PageImpl<TrainingHistoryResponse> trainingHistoryResponsePage = new PageImpl<>(trainingHistoryResponse.toList());
+        return ResponseEntity.ok().body(trainingHistoryResponsePage);
+    }
+
+    @Override
+    public ResponseEntity<TrainingHistoryResponse> getTrainingHistoryById(Long id) {
+        TrainingHistoryEntity trainingHistoryEntity = trainingHistoryService.getTrainingHistoryById(id);
+        TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity);
+        return ResponseEntity.ok().body(trainingHistoryResponse);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteTrainingHistory(Long id) {
+        trainingHistoryService.deleteTrainingHistory(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<TrainingHistoryResponse> updateTrainingHistory(Long id, TrainingHistoryRequest trainingHistoryRequest) {
+        Optional<TrainingHistoryEntity> trainingHistoryEntity = trainingHistoryService.updateTrainingHistory(id, trainingHistoryRequest);
+        if(trainingHistoryEntity.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        TrainingHistoryEntity trainingHistoryEntity1 = trainingHistoryEntity.get();
+        TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity1);
+        return ResponseEntity.ok().body(trainingHistoryResponse);
+    }
+
+
 }

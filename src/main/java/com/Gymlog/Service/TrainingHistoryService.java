@@ -3,10 +3,17 @@ package com.Gymlog.Service;
 import com.Gymlog.Controllers.Mapper.TrainingHistoryMapper;
 import com.Gymlog.Controllers.Request.TrainingHistoryRequest;
 import com.Gymlog.Entity.TrainingHistoryEntity;
+import com.Gymlog.Enums.StatusEnum;
+import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Repository.TrainingHistoryRepopistory;
 import com.Gymlog.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +44,60 @@ public class  TrainingHistoryService {
             throw new IllegalArgumentException("User not found");
         }
 
+        if(trainingHistory.ocurrenceDate() == null) {
+            throw new IllegalArgumentException("Date cannot be null");
+        }
+
+        if(trainingHistory.statusEnum() == null) {
+            throw new IllegalArgumentException("Status cannot be null");
+        }
+
+
+
         return trainingHistoryRepository.save(TrainingHistoryMapper.toTrainingHistoryEntity(trainingHistory, user, workoutPlan));
+    }
+
+    public Page<TrainingHistoryEntity> getAllTrainingHistoryByPage(int page, int size) {
+        return trainingHistoryRepository.findAll(PageRequest.of(page, size));
+    }
+
+    public List<TrainingHistoryEntity> getAllTrainingHistory() {
+        return trainingHistoryRepository.findAll();
+    }
+
+
+    public void deleteTrainingHistory(Long id) {
+        TrainingHistoryEntity trainingHistoryEntity = trainingHistoryRepository.findById(id).orElse(null);
+        if(trainingHistoryEntity == null) {
+            throw new IllegalArgumentException("Training history not found");
+        }
+        trainingHistoryRepository.delete(trainingHistoryEntity);
+    }
+
+    public Optional<TrainingHistoryEntity>  updateTrainingHistory(Long id, TrainingHistoryRequest trainingHistoryRequest) {
+        Optional<TrainingHistoryEntity> trainingHistoryEntity = trainingHistoryRepository.findById(id);
+
+
+        if(!trainingHistoryEntity.isEmpty()) {
+            TrainingHistoryEntity trainingHistoryEntity1 = trainingHistoryEntity.get();
+            trainingHistoryEntity1.setWorkoutPlanEntity(workoutPlanService.findById(trainingHistoryRequest.workoutPlanId()).orElseThrow(()-> new NotFoundException("NOT_FOUND", "Workout plan not found")));
+            trainingHistoryEntity1.setUserEntity(userRepository.findById(trainingHistoryRequest.userId()).orElseThrow(()-> new NotFoundException("NOT_FOUND", "User not found")));
+            trainingHistoryEntity1.setComment(trainingHistoryRequest.comment());
+            trainingHistoryEntity1.setOcurrenceDate(trainingHistoryRequest.ocurrenceDate());
+
+            if(StatusEnum.valueOf( trainingHistoryRequest.statusEnum().name()) == null) {
+                throw new IllegalArgumentException("Status not exists is not valid");
+            }
+            trainingHistoryEntity1.setStatus(trainingHistoryRequest.statusEnum());
+            return Optional.of(trainingHistoryRepository.save(trainingHistoryEntity1));
+        }
+        else {
+           return Optional.empty();
+        }
+    }
+
+    public TrainingHistoryEntity getTrainingHistoryById(Long id) {
+        TrainingHistoryEntity trainingHistoryEntity = trainingHistoryRepository.findById(id).orElseThrow( () -> new NotFoundException("NOT_FOUND","Training history not found"));
+        return trainingHistoryEntity;
     }
 }

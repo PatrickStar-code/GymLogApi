@@ -16,6 +16,8 @@ public class TrainingHistoryMapper {
                 .date(trainingHistory.getOcurrenceDate())
                 .user(UserMapper.toUserResponse(trainingHistory.getUserEntity()))
                 .workoutPlan(WorkoutPlanMapper.toWorkoutPlanResponse(trainingHistory.getWorkoutPlanEntity()))
+                .statusEnum(trainingHistory.getStatus())
+                .comment(trainingHistory.getComment())
                 .build();
     }
 
