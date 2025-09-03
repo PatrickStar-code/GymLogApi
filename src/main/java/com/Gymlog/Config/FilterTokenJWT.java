@@ -28,6 +28,16 @@ public class FilterTokenJWT  extends OncePerRequestFilter {
         try {
             String token = getTokenRequisition(request);
 
+            if(token == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 40
+                response.setContentType("application/json");
+                String json = "{\"error\": \"Token JWT ausente\"}";
+                response.getWriter().write(json);
+                response.getWriter().flush();
+                return;
+            }
+
+
             if (token != null) {
                 String email = tokenService.verifyToken(token);
                 UserEntity user = userRepository.findByEmailIgnoreCaseAndVerifiedTrue(email)
@@ -37,6 +47,8 @@ public class FilterTokenJWT  extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
+
+
             filterChain.doFilter(request, response);
 
         } catch (Exception ex) {
@@ -44,7 +56,7 @@ public class FilterTokenJWT  extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
 
             // Define o status HTTP e o conteúdo da resposta
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 40
             response.setContentType("application/json");
 
             // Monta uma resposta JSON simples
