@@ -88,6 +88,34 @@ TrainingHistoryInterface {
     public ResponseEntity<TrainingHistoryResponse> updateTrainingHistory(@Parameter(description = "ID do historico de treino", example = "1") @PathVariable Long id,
                                                                           @RequestBody TrainingHistoryRequest trainingHistoryRequest);
 
+    @Operation(
+            summary = "Buscar historico de treino por Mês e Ano de treino",
+            description = "Busca um historico de treino no sistema."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Historico de treino encontrado com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TrainingHistoryResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida",
+                    content = @Content)
+    })
+    @GetMapping("/user/{userId}/month/{month}/year/{year}")
+    public ResponseEntity<Page<TrainingHistoryResponse>> getTrainingHistoryByMonthAndYear(
+            @Parameter(description = "ID do Usuario", example = "1")
+            @PathVariable Long userId,
+
+            @Parameter(description = "Mês", example = "9")
+            @PathVariable int month,
+
+            @Parameter(description = "Ano", example = "2022")
+            @PathVariable int year,
+
+            @Parameter(description = "Número da página", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+
+            @Parameter(description = "Quantidade de itens por página", example = "10")
+            @RequestParam(defaultValue = "10") int size
+    );
 
 
     @Operation(
@@ -101,7 +129,7 @@ TrainingHistoryInterface {
             @ApiResponse(responseCode = "400", description = "Requisição inválida",
                     content = @Content)
     })
-    @GetMapping("/{id}/user")
+    @GetMapping("/user/{id}/")
     public ResponseEntity<Page<TrainingHistoryResponse>> getTrainingHistoryByUser(@Parameter(description = "ID do Usuario", example = "1") @PathVariable Long id,
                                                                             @Parameter(description = "Numero da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
                                                                                   @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size);

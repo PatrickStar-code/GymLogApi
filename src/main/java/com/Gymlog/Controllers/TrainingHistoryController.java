@@ -6,18 +6,11 @@ import com.Gymlog.Controllers.Response.TrainingHistoryResponse;
 import com.Gymlog.Controllers.SwaggerInterface.TrainingHistoryInterface;
 import com.Gymlog.Entity.TrainingHistoryEntity;
 import com.Gymlog.Service.TrainingHistoryService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -37,7 +30,6 @@ public class TrainingHistoryController implements TrainingHistoryInterface {
     @Override
     public ResponseEntity<TrainingHistoryResponse> saveTrainingHistory(TrainingHistoryRequest trainingHistory, UriComponentsBuilder uriBuilder) {
         TrainingHistoryEntity trainingHistoryEntity = trainingHistoryService.saveTrainingHistory(trainingHistory);
-        System.out.println(trainingHistoryEntity);
         TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity);
         return ResponseEntity.created(uriBuilder.path("/Gymlog/trainingHistory/{id}").buildAndExpand(trainingHistoryResponse.id()).toUri()).body(trainingHistoryResponse);
     }
@@ -79,6 +71,20 @@ public class TrainingHistoryController implements TrainingHistoryInterface {
         TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity1);
         return ResponseEntity.ok().body(trainingHistoryResponse);
     }
+
+    @Override
+    public ResponseEntity<Page<TrainingHistoryResponse>> getTrainingHistoryByMonthAndYear(Long userId, int month, int year, int page, int size) {
+        if(page>=0 && size>0) {
+            Page<TrainingHistoryEntity> trainingHistory = trainingHistoryService.getAllTrainingHistoryByMonthAndYearPage(page, size, month, year, userId);
+            Page<TrainingHistoryResponse> trainingHistoryResponse = trainingHistory.map(TrainingHistoryMapper::toTrainingHistoryResponse);
+            return ResponseEntity.ok().body(trainingHistoryResponse);
+        }
+        List<TrainingHistoryEntity> trainingHistoryEntity = trainingHistoryService.getAllTrainingHistoryByMonthAndYear(month, year);
+        Stream<TrainingHistoryResponse> trainingHistoryResponse = trainingHistoryEntity.stream().map(TrainingHistoryMapper::toTrainingHistoryResponse);
+        PageImpl<TrainingHistoryResponse> trainingHistoryResponsePage = new PageImpl<>(trainingHistoryResponse.toList());
+        return ResponseEntity.ok().body(trainingHistoryResponsePage);
+    }
+
 
     @Override
     public ResponseEntity<Page<TrainingHistoryResponse>> getTrainingHistoryByUser(Long id, int page, int size) {

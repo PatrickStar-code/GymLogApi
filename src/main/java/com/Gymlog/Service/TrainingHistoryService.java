@@ -116,5 +116,27 @@ public class  TrainingHistoryService {
     }
 
 
+    public Page<TrainingHistoryEntity> getAllTrainingHistoryByMonthAndYearPage(int page, int size, int month, int year, Long userId) {
+        if(userId == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
 
+        if(month < 1 || month > 12) {
+            throw new IllegalArgumentException("Month must be between 1 and 12");
+        }
+
+        if(year < 1) {
+            throw new IllegalArgumentException("Year must be greater than 0");
+        }
+
+        userRepository.findById(userId).orElseThrow(()-> new NotFoundException("NOT_FOUND", "User not found"));
+
+        Page<TrainingHistoryEntity> trainingHistoryEntities = trainingHistoryRepository.findAllByUserEntity_UserIdAndByMonthAndByYear(PageRequest.of(page, size), userId, month, year);
+        return trainingHistoryEntities;
+    }
+
+    public List<TrainingHistoryEntity> getAllTrainingHistoryByMonthAndYear(int month, int year) {
+        List<TrainingHistoryEntity> trainingHistoryEntities = trainingHistoryRepository.findAllByByMonthAndByYear(month, year);
+        return trainingHistoryEntities;
+    }
 }
