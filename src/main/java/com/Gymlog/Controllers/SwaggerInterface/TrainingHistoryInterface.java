@@ -13,7 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public interface TrainingHistoryInterface {
+public interface
+TrainingHistoryInterface {
     @Operation(
             summary = "Cadastrar novo historico de treino",
             description = "Salva um novo historico de treino no sistema."
@@ -86,4 +87,23 @@ public interface TrainingHistoryInterface {
     @PutMapping("/{id}")
     public ResponseEntity<TrainingHistoryResponse> updateTrainingHistory(@Parameter(description = "ID do historico de treino", example = "1") @PathVariable Long id,
                                                                           @RequestBody TrainingHistoryRequest trainingHistoryRequest);
+
+
+
+    @Operation(
+            summary = "Buscar historico de treino por Usuario",
+            description = "Busca um historico de treino no sistema."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Historico de treino encontrado com sucesso",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TrainingHistoryResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida",
+                    content = @Content)
+    })
+    @GetMapping("/{id}/user")
+    public ResponseEntity<Page<TrainingHistoryResponse>> getTrainingHistoryByUser(@Parameter(description = "ID do Usuario", example = "1") @PathVariable Long id,
+                                                                            @Parameter(description = "Numero da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
+                                                                                  @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size);
 }
+

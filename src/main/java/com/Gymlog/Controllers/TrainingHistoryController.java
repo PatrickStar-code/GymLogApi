@@ -80,5 +80,18 @@ public class TrainingHistoryController implements TrainingHistoryInterface {
         return ResponseEntity.ok().body(trainingHistoryResponse);
     }
 
+    @Override
+    public ResponseEntity<Page<TrainingHistoryResponse>> getTrainingHistoryByUser(Long id, int page, int size) {
+        if(page>=0 && size>0) {
+            Page<TrainingHistoryEntity> trainingHistory = trainingHistoryService.getAllTrainingHistoryByUserPage(page, size, id);
+            Page<TrainingHistoryResponse> trainingHistoryResponse = trainingHistory.map(TrainingHistoryMapper::toTrainingHistoryResponse);
+            return ResponseEntity.ok().body(trainingHistoryResponse);
+        }
+        List<TrainingHistoryEntity> trainingHistoryEntity = trainingHistoryService.getAllTrainingHistoryByUser(id);
+        Stream<TrainingHistoryResponse> trainingHistoryResponse = trainingHistoryEntity.stream().map(TrainingHistoryMapper::toTrainingHistoryResponse);
+        PageImpl<TrainingHistoryResponse> trainingHistoryResponsePage = new PageImpl<>(trainingHistoryResponse.toList());
+        return ResponseEntity.ok().body(trainingHistoryResponsePage);
+    }
+
 
 }

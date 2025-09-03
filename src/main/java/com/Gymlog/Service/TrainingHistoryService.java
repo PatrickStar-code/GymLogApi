@@ -100,4 +100,21 @@ public class  TrainingHistoryService {
         TrainingHistoryEntity trainingHistoryEntity = trainingHistoryRepository.findById(id).orElseThrow( () -> new NotFoundException("NOT_FOUND","Training history not found"));
         return trainingHistoryEntity;
     }
+
+    public Page<TrainingHistoryEntity> getAllTrainingHistoryByUserPage(int page, int size, Long id) {
+        userRepository.findById(id).orElseThrow(()-> new NotFoundException("NOT_FOUND", "User not found"));
+
+        Page<TrainingHistoryEntity> trainingHistoryEntities = trainingHistoryRepository.findAllByUserEntity_UserId(PageRequest.of(page, size), id);
+        return trainingHistoryEntities;
+    }
+
+
+
+    public List<TrainingHistoryEntity> getAllTrainingHistoryByUser(Long id) {
+        List<TrainingHistoryEntity> trainingHistoryEntities = trainingHistoryRepository.findAllByUserEntity_UserId(id);
+        return trainingHistoryEntities;
+    }
+
+
+
 }
