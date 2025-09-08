@@ -26,9 +26,15 @@ public class FilterTokenJWT  extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+            String uri = request.getRequestURI();
+            if (uri.equals("/login") || uri.equals("/refresh-token") || uri.equals("/GymLog/users/register") || uri.equals("/GymLog/users/verify-user")) {
+                filterChain.doFilter(request, response);  // Não aplicar o filtro JWT nessas rotas
+                return;
+            }
+
             String token = getTokenRequisition(request);
 
-            if(token == null) {
+            if (token == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 40
                 response.setContentType("application/json");
                 String json = "{\"error\": \"Token JWT ausente\"}";
@@ -36,7 +42,6 @@ public class FilterTokenJWT  extends OncePerRequestFilter {
                 response.getWriter().flush();
                 return;
             }
-
 
             if (token != null) {
                 String email = tokenService.verifyToken(token);
@@ -46,8 +51,6 @@ public class FilterTokenJWT  extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
-
 
             filterChain.doFilter(request, response);
 
