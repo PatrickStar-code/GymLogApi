@@ -6,6 +6,7 @@ import com.Gymlog.Controllers.Response.ProgressLogResponse;
 import com.Gymlog.Entity.ProgressLogEntity;
 import com.Gymlog.Service.ProgressLogService;
 import com.Gymlog.Controllers.SwaggerInterface.ProgressLogControllerInterface;
+import com.Gymlog.Validator.ProgressLogValidador;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,6 +36,7 @@ public class ProgressLogController implements ProgressLogControllerInterface {
     @Override
     public ResponseEntity<ProgressLogResponse> createProgressLog(ProgressLogRequest progressLogRequest, UriComponentsBuilder uriBuilder) {
         ProgressLogEntity response = progressLogService.createProgressLog(progressLogRequest);
+        ProgressLogValidador.verifyErrorsProgressLog(response);
         ProgressLogResponse progressLogResponse = ProgressLogMapper.toProgressLogResponse(response);
         return ResponseEntity.created(uriBuilder.path("/GymLog/progresslog/{id}").buildAndExpand(response.getId()).toUri()).body(progressLogResponse);
     }

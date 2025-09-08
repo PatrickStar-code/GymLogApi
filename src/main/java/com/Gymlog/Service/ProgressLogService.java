@@ -6,8 +6,10 @@ import com.Gymlog.Entity.ProgressLogEntity;
 import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Repository.ProgressLogRepository;
+import com.Gymlog.Validator.ProgressLogValidador;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,14 +33,21 @@ public class ProgressLogService {
     public ProgressLogEntity createProgressLog(ProgressLogRequest progressLogRequest) {
         UserEntity user = findUser(progressLogRequest.user());
         ProgressLogEntity progressLog = ProgressLogMapper.toProgressEntity(progressLogRequest, user);
+        ProgressLogValidador.verifyErrorsProgressLog(progressLog);
         return repository.save(progressLog);
     }
 
     @Transactional
     public Optional<ProgressLogEntity> updateProgressLog(ProgressLogRequest progressLogRequest, Long id) {
         Optional<ProgressLogEntity> progressLog = repository.findById(id);
+
         if (progressLog.isPresent()) {
+
+
             ProgressLogEntity progressLogEntity = progressLog.get();
+
+            ProgressLogValidador.verifyErrorsProgressLog(progressLogEntity);
+
             progressLogEntity.setDate(progressLogRequest.date());
             progressLogEntity.setWeight(progressLogRequest.weight());
             progressLogEntity.setBodyFat(progressLogRequest.bodyFat());
@@ -58,6 +67,8 @@ public class ProgressLogService {
             return Optional.empty();
      }
     }
+
+
 
 
     @Transactional

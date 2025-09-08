@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @Component
 @RequiredArgsConstructor
@@ -28,14 +29,14 @@ public class FilterTokenJWT  extends OncePerRequestFilter {
         try {
             String uri = request.getRequestURI();
             if (uri.equals("/login") || uri.equals("/refresh-token") || uri.equals("/GymLog/users/register") || uri.equals("/GymLog/users/verify-user")) {
-                filterChain.doFilter(request, response);  // Não aplicar o filtro JWT nessas rotas
+                filterChain.doFilter(request, response);
                 return;
             }
 
             String token = getTokenRequisition(request);
 
             if (token == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 40
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 String json = "{\"error\": \"Token JWT ausente\"}";
                 response.getWriter().write(json);
@@ -54,17 +55,30 @@ public class FilterTokenJWT  extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-        } catch (Exception ex) {
-            // Limpa o contexto de segurança para evitar problemas posteriores
+        } catch (DataIntegrityViolationException ex) {
             SecurityContextHolder.clearContext();
 
-            // Define o status HTTP e o conteúdo da resposta
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 40
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType("application/json");
+            String json = "{\"error\": \"Erro de integridade de dados: " + ex.getMessage() + "\"}";
+            response.getWriter().write(json);
+            response.getWriter().flush();
 
-            // Monta uma resposta JSON simples
-            String json = "{\"error\": \"" + ex.getMessage().replace("\"", "'") + "\"}";
+        } catch (RuntimeException ex) {
+            SecurityContextHolder.clearContext();
 
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            String json = "{\"error\": \"Erro de autenticação: " + ex.getMessage() + "\"}";
+            response.getWriter().write(json);
+            response.getWriter().flush();
+
+        } catch (Exception ex) {
+            SecurityContextHolder.clearContext();
+
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
+            response.setContentType("application/json");
+            String json = "{\"error\": \"Erro interno do servidor: " + ex.getMessage() + "\"}";
             response.getWriter().write(json);
             response.getWriter().flush();
         }
