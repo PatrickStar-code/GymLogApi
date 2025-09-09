@@ -28,5 +28,6 @@ public record FoodResponse(
         double fats,
 
         @Schema(description = "Gramas da comida", example = "10.0")
-        double grams) {
+        double grams
+) {
 }

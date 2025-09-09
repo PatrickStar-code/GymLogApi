@@ -4,7 +4,7 @@ import com.Gymlog.Entity.ProgressLogEntity;
 
 public class ProgressLogValidador {
     public static void verifyErrorsProgressLog(ProgressLogEntity progressLogEntity) {
-        if(progressLogEntity.getDate() == null){
+        if(progressLogEntity.getDate() == null ){
             throw new IllegalArgumentException("Data nao pode ser nula!");
         }
 
@@ -52,7 +52,7 @@ public class ProgressLogValidador {
             throw new IllegalArgumentException("Cintura nao pode ser zero!");
         }
 
-        if(progressLogEntity.getResponsible() == null){
+        if(progressLogEntity.getResponsible() == null || progressLogEntity.getResponsible() == ""){
             throw new IllegalArgumentException("Responsavel nao pode ser nulo!");
         }
     }

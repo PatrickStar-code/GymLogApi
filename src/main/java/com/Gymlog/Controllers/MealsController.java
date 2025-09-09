@@ -47,8 +47,9 @@ public class MealsController implements MealControllerInterface {
 
     @Override
     public ResponseEntity<Void> delete(long id) {
+        Optional<MealEntity> meal = mealsService.getMealsById(id);
+        if(meal.isEmpty()) return ResponseEntity.notFound().build();
         Optional<Void> result = mealsService.deleteMeals(id);
-        if(result.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.noContent().build();
     }
 

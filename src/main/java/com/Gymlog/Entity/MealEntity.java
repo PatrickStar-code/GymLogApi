@@ -31,23 +31,6 @@ public class MealEntity {
     @Enumerated(EnumType.STRING)
     private MealType mealType;
 
-
-    @Column(nullable = false)
-    private double calories;
-
-
-    @Column(nullable = false)
-    private double proteins;
-
-
-    @Column(nullable = false)
-    private double carbs;
-
-
-
-    @Column(nullable = false)
-    private double fats;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;

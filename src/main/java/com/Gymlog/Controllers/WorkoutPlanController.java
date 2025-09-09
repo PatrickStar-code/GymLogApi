@@ -5,7 +5,6 @@ import com.Gymlog.Controllers.Request.WorkoutPlanRequest;
 import com.Gymlog.Controllers.Response.WorkoutPlanResponse;
 import com.Gymlog.Controllers.SwaggerInterface.WorkoutPlanControllerInterface;
 import com.Gymlog.Entity.WorkoutPlanEntity;
-import com.Gymlog.Repository.WorkoutPlanRepository;
 import com.Gymlog.Service.WorkoutPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/GymLog/workoutPlan")

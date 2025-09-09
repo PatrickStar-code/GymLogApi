@@ -17,17 +17,6 @@ public record MealsResponse(
     @Schema(description = "Tipo da refeição", example = "BREAKFAST")
     MealType mealType,
 
-    @Schema(description = "Calorias da refeição", example = "100.0")
-    double calories,
-
-    @Schema(description = "Proteinas da refeição", example = "10.0")
-    double proteins,
-
-    @Schema(description = "Carbohidratos da refeição", example = "10.0")
-    double carbs,
-
-    @Schema(description = "Fibras da refeição", example = "10.0")
-    double fats,
 
     @Schema(description = "Dados do usuário")
     UserResponse user

@@ -4,6 +4,7 @@ import com.Gymlog.Controllers.Request.FoodRequest;
 import com.Gymlog.Controllers.Response.FoodResponse;
 import com.Gymlog.Entity.FoodEntity;
 import com.Gymlog.Repository.FoodRepository;
+import com.Gymlog.Validator.FoodValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,7 @@ public class FoodService {
         if (food.isPresent()) {
 
             FoodEntity foodEntity = food.get();
+            FoodValidator.verifyErrorsFood(foodEntity);
 
             foodEntity.setFoodName(foodRequest.foodName());
             foodEntity.setCalories(foodRequest.calories());
@@ -53,6 +55,7 @@ public class FoodService {
 
     @Transactional
     public FoodEntity save(FoodEntity foodEntity) {
+        FoodValidator.verifyErrorsFood(foodEntity);
         return foodRepository.save(foodEntity);
     }
 

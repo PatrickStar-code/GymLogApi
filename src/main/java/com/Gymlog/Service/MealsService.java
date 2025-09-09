@@ -6,6 +6,7 @@ import com.Gymlog.Entity.MealEntity;
 import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Repository.MealsRepository;
 import com.Gymlog.Repository.UserRepository;
+import com.Gymlog.Validator.MealsValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,19 +36,15 @@ public class MealsService {
     public Optional<Void> deleteMeals(long id) {
         Optional<MealEntity> result = mealsRepository.findById(id);
         if(result.isPresent()) mealsRepository.delete(result.get());
-        return Optional.empty();
-    }
+        return Optional.empty();    }
 
     public Optional<MealEntity> updateMeals(Long id, MealsRequest mealsRequest) {
         Optional<MealEntity> result = mealsRepository.findById(id);
         if(result.isPresent()) {
             MealEntity mealEntity = result.get();
+            MealsValidator.validateMeal(mealEntity);
             mealEntity.setDateTime(mealsRequest.dateTime());
             mealEntity.setMealType(mealsRequest.mealType());
-            mealEntity.setCalories(mealsRequest.calories());
-            mealEntity.setProteins(mealsRequest.proteins());
-            mealEntity.setCarbs(mealsRequest.carbs());
-            mealEntity.setFats(mealsRequest.fats());
             mealsRepository.save(mealEntity);
             return Optional.of(mealEntity);
         }
@@ -63,6 +60,7 @@ public class MealsService {
 
         MealEntity mealEntity = MealsMapper.toMealEntity(mealsRequest);
         mealEntity.setUser(userEntity.get());
+        MealsValidator.validateMeal(mealEntity);
 
         mealsRepository.save(mealEntity);
         return Optional.of(mealEntity);

@@ -12,11 +12,6 @@ public class MealsMapper {
         return MealEntity.builder()
                 .dateTime(mealRequest.dateTime())
                 .mealType(mealRequest.mealType())
-                .proteins(mealRequest.proteins())
-                .carbs(mealRequest.carbs())
-                .fats(mealRequest.fats())
-                .fats(mealRequest.fats())
-                .calories(mealRequest.calories())
                 .build();
     }
 
@@ -27,10 +22,6 @@ public class MealsMapper {
                 .id(mealEntity.getId())
                 .dateTime(mealEntity.getDateTime())
                 .mealType(mealEntity.getMealType())
-                .calories(mealEntity.getCalories())
-                .proteins(mealEntity.getProteins())
-                 .carbs(mealEntity.getCarbs())
-                .fats(mealEntity.getFats())
                 .user(UserMapper.toUserResponse(mealEntity.getUser()))
                 .build();
     }

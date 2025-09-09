@@ -6,6 +6,7 @@ import com.Gymlog.Controllers.Response.FoodResponse;
 import com.Gymlog.Entity.FoodEntity;
 import com.Gymlog.Service.FoodService;
 import com.Gymlog.Controllers.SwaggerInterface.FoodControllerInterface;
+import com.Gymlog.Validator.FoodValidator;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -2,14 +2,13 @@ package com.Gymlog.Service;
 
 import com.Gymlog.Controllers.Mapper.WorkoutPlanMapper;
 import com.Gymlog.Controllers.Request.WorkoutPlanRequest;
-import com.Gymlog.Controllers.Response.WorkoutPlanResponse;
 import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Entity.WorkoutPlanEntity;
 import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Repository.UserRepository;
 import com.Gymlog.Repository.WorkoutPlanRepository;
+import com.Gymlog.Validator.WorkoutPlanValidator;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -46,6 +45,7 @@ public class WorkoutPlanService {
         UserEntity user = userRepository.findById(workoutPlanRequest.userid()).orElseThrow( () -> new NotFoundException("NOT_FOUND", "Usuário nao encontrado!"));
 
         WorkoutPlanEntity workoutPlanEntity = WorkoutPlanMapper.toWorkoutPlanEntity(workoutPlanRequest);
+        WorkoutPlanValidator.validateWorkoutPlan(workoutPlanEntity);
         workoutPlanEntity.setUser(user);
         return repository.save(workoutPlanEntity);
     }
@@ -54,6 +54,8 @@ public class WorkoutPlanService {
         Optional<WorkoutPlanEntity> result = repository.findById(id);
         if(result.isPresent()) {
             WorkoutPlanEntity workoutPlanEntity = result.get();
+            WorkoutPlanValidator.validateWorkoutPlan(workoutPlanEntity);
+
             workoutPlanEntity.setName(workoutPlanRequest.name());
             workoutPlanEntity.setImageUrl(workoutPlanRequest.imageUrl());
             return Optional.of(repository.save(workoutPlanEntity));

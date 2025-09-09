@@ -10,6 +10,7 @@ import com.Gymlog.Exceptions.EmailExistException;
 import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Exceptions.PasswordConfirmIncorrectException;
 import com.Gymlog.Repository.UserRepository;
+import com.Gymlog.Validator.UserValidator;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,7 @@ public class UserService implements UserDetailsService {
 
         var passwordEncrypted = encriptador.encode(data.password());
         var user = new UserEntity(data, passwordEncrypted);
+        UserValidator.validateUser(user);
 
         emailService.sendEmailVerification(user);
         return userRepository.save(user);
@@ -81,7 +83,7 @@ public class UserService implements UserDetailsService {
         Optional<UserEntity> user = userRepository.findById(id);
         if (user.isPresent()) {
             UserEntity userEntity = user.get();
-
+            UserValidator.validateUser(userEntity);
             userEntity.setUsername(updateRequest.username());
             userEntity.setHeight(updateRequest.height());
             userEntity.setWeight(updateRequest.weight());
