@@ -42,16 +42,25 @@ public class MealItemService {
         Optional<MealItemEntity> result = repository.findById(id);
 
         if(result.isPresent()) {
+            if(mealItemRequest.meals() == null || mealItemRequest.food() == null){
+                throw new IllegalArgumentException("Refeição ou alimento não informados");
+            }
 
+            Optional<MealEntity> mealEntity = getMeals(mealItemRequest.meals());
+            Optional<FoodEntity> foodEntity = getFood(mealItemRequest.food());
 
-            MealEntity mealEntity = getMeals(mealItemRequest.meals()).get();
-            FoodEntity foodEntity = getFood(mealItemRequest.food()).get();
+            if(mealEntity.isEmpty()){
+                throw new NotFoundException("NOT_FOUND", "Refeição não encontrada");
+            }
 
-            if(mealEntity == null || foodEntity == null) return Optional.empty();
+            if(foodEntity.isEmpty()){
+                throw new NotFoundException("NOT_FOUND", "Alimento não encontrado");
+            }
+
 
             MealItemEntity mealItemEntity = result.get();
-            mealItemEntity.setMeal(mealEntity);
-            mealItemEntity.setFood(foodEntity);
+            mealItemEntity.setMeal(mealEntity.get());
+            mealItemEntity.setFood(foodEntity.get());
             mealItemEntity.setQuantity(mealItemRequest.quantity());
             repository.save(mealItemEntity);
             return Optional.of(mealItemEntity);
