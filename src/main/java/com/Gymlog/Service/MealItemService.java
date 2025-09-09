@@ -65,9 +65,14 @@ public class MealItemService {
         Optional<MealEntity> mealEntityOptional = getMeals(mealItemRequest.meals());
         Optional<FoodEntity> foodEntityOptional = getFood(mealItemRequest.food());
 
-        if (mealEntityOptional.isEmpty() || foodEntityOptional.isEmpty()) {
-            throw new IllegalArgumentException("O ID da refeição e do alimento não podem ser nulos.");
-        }
+
+       if(mealEntityOptional.isEmpty()){
+           throw new NotFoundException("NOT_FOUND","Refeição não encontrada");
+       }
+
+       if(foodEntityOptional.isEmpty()){
+           throw new NotFoundException("NOT_FOUND","Alimento não encontrado");
+       }
 
         MealEntity mealEntity = mealEntityOptional.get();
         FoodEntity foodEntity = foodEntityOptional.get();

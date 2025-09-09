@@ -35,7 +35,7 @@ public class MealEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "meal")
     private Set<MealItemEntity> mealItems;
 
 }

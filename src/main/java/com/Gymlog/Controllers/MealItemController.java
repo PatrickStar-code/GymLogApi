@@ -53,6 +53,7 @@ public class MealItemController implements MealItemControllerInterface {
 
     @Override
     public ResponseEntity<MealItemResponse> createMealItem(MealItemRequest mealItemRequest, UriComponentsBuilder uriBuilder) {
+        System.out.println(mealItemRequest);
         Optional<MealItemEntity> mealItem = service.createMealItem(mealItemRequest);
         var uri = uriBuilder.path("/{id}").buildAndExpand(mealItem.get().getId()).toUri();
         return ResponseEntity.created(uri).body(MealItemMapper.toResponse(mealItem.get()));

@@ -28,7 +28,7 @@ public class WorkoutPlanEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "workoutPlan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "workoutPlan")
     private Set<WorkoutExercisesEntity> workoutExercises;
 
 

@@ -101,14 +101,14 @@ public class UserEntity implements UserDetails {
     @Column( name = "verification_token_expiration_date")
     private LocalDateTime tokenExpirationDate;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private Set<ProgressLogEntity> progressLogs;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private Set<WorkoutPlanEntity> workoutPlans;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private Set<MealEntity> meals;
 
 

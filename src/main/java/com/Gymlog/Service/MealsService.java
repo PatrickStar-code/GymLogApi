@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,8 +36,12 @@ public class MealsService {
 
     public Optional<Void> deleteMeals(long id) {
         Optional<MealEntity> result = mealsRepository.findById(id);
-        if(result.isPresent()) mealsRepository.delete(result.get());
-        return Optional.empty();    }
+        if(result.isPresent()){
+            MealEntity mealEntity = result.get();
+            mealsRepository.delete(mealEntity);
+        }
+        return Optional.empty();
+    }
 
     public Optional<MealEntity> updateMeals(Long id, MealsRequest mealsRequest) {
         Optional<MealEntity> result = mealsRepository.findById(id);
@@ -61,7 +66,6 @@ public class MealsService {
         MealEntity mealEntity = MealsMapper.toMealEntity(mealsRequest);
         mealEntity.setUser(userEntity.get());
         MealsValidator.validateMeal(mealEntity);
-
         mealsRepository.save(mealEntity);
         return Optional.of(mealEntity);
     }
