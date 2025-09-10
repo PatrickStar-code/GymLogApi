@@ -9,7 +9,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -26,7 +28,10 @@ public interface WorkoutExercisesControllerInterface {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = WorkoutExercisesResponse.class)))
     @GetMapping("/")
-    ResponseEntity<List<WorkoutExercisesResponse>> getWorkoutExercises();
+    ResponseEntity<Page<WorkoutExercisesResponse>> getWorkoutExercises(
+            @Parameter(description = "Número da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
+            @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size
+    );
 
     @Operation(
             summary = "Buscar exercício de treino por ID",
@@ -55,9 +60,11 @@ public interface WorkoutExercisesControllerInterface {
             @ApiResponse(responseCode = "404", description = "Plano de treino não encontrado")
     })
     @GetMapping("/{id}/workoutPlan")
-    ResponseEntity<List<WorkoutExercisesResponse>> getWorkoutExercisesByWorkoutPlanId(
+    ResponseEntity<Page<WorkoutExercisesResponse>> getWorkoutExercisesByWorkoutPlanId(
             @Parameter(description = "ID do plano de treino", example = "1")
-            @PathVariable Long id
+            @PathVariable Long id,
+              @Parameter(description = "Número da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
+    @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size
     );
 
     @Operation(

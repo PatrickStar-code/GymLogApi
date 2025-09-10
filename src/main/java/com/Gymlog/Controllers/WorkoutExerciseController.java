@@ -6,14 +6,20 @@ import com.Gymlog.Controllers.Response.ExerciseResponse;
 import com.Gymlog.Controllers.Response.WorkoutExercisesResponse;
 import com.Gymlog.Controllers.SwaggerInterface.WorkoutExercisesControllerInterface;
 import com.Gymlog.Entity.WorkoutExercisesEntity;
+import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Service.ExerciseApiService;
 import com.Gymlog.Service.WorkoutExercisesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -27,36 +33,56 @@ public class WorkoutExerciseController implements WorkoutExercisesControllerInte
 
 
     @Override
-    public ResponseEntity<List<WorkoutExercisesResponse>> getWorkoutExercises() {
+    public ResponseEntity<Page<WorkoutExercisesResponse>> getWorkoutExercises(int page, int size) {
         List<WorkoutExercisesEntity> workoutExercisesEntity = service.getWorkoutExercises();
 
-        List<WorkoutExercisesResponse> response = workoutExercisesEntity.stream().map(entity -> {
-            ExerciseResponse exerciseResponse = exerciseApiService.getExerciseById(entity.getExerciceId());
+        List<WorkoutExercisesResponse> allResponses = workoutExercisesEntity.stream()
+                .map(entity -> {
+                    ExerciseResponse exerciseResponse = exerciseApiService.getExerciseById(entity.getExerciceId());
+                    if (exerciseResponse == null) return null;
 
-            if (exerciseResponse == null) {
-                return null;
-            }
+                    ExerciseResponse exercise = new ExerciseResponse(
+                            exerciseResponse.exerciseId(),
+                            exerciseResponse.name(),
+                            exerciseResponse.gifUrl(),
+                            exerciseResponse.instructions(),
+                            exerciseResponse.targetMuscles(),
+                            exerciseResponse.bodyParts(),
+                            exerciseResponse.equipments(),
+                            exerciseResponse.secondaryMuscles()
+                    );
 
+                    return new WorkoutExercisesResponse(
+                            entity.getId(),
+                            exercise,
+                            entity.getWorkoutPlan().getId()
+                    );
+                })
+                .filter(Objects::nonNull)
+                .toList();
 
-            ExerciseResponse exercise = new ExerciseResponse(
-                    exerciseResponse.exerciseId(),
-                    exerciseResponse.name(),
-                    exerciseResponse.gifUrl(),
-                    exerciseResponse.instructions(),
-                    exerciseResponse.targetMuscles(),
-                    exerciseResponse.bodyParts(),
-                    exerciseResponse.equipments(),
-                    exerciseResponse.secondaryMuscles()
-            );
+        System.out.println(allResponses.size());
+        if(allResponses.size() == 0){
+            size = 1;
+            page = 0;
+            return  ResponseEntity.ok(new PageImpl<>(new ArrayList<>(), PageRequest.of(page, size), 0));
+        }
+        int total = allResponses.size();
 
-            return new WorkoutExercisesResponse(
-                    entity.getId(),
-                    exercise,
-                    entity.getWorkoutPlan().getId()
-            );
-        }).toList();
+        if (size <= 0) size = total;
+        if (page < 0) page = 0;
 
-        return ResponseEntity.ok(response);
+        int fromIndex = Math.min(page * size, total);
+        int toIndex = Math.min(fromIndex + size, total);
+        List<WorkoutExercisesResponse> paginatedResponses = allResponses.subList(fromIndex, toIndex);
+
+        Page<WorkoutExercisesResponse> pageResult = new PageImpl<>(
+                paginatedResponses,
+                PageRequest.of(page, size),
+                total
+        );
+
+        return ResponseEntity.ok(pageResult);
     }
 
     @Override
@@ -71,18 +97,59 @@ public class WorkoutExerciseController implements WorkoutExercisesControllerInte
     }
 
     @Override
-    public ResponseEntity<List<WorkoutExercisesResponse>> getWorkoutExercisesByWorkoutPlanId(Long id) {
+    public ResponseEntity<Page<WorkoutExercisesResponse>> getWorkoutExercisesByWorkoutPlanId(Long id, int page, int size) {
         List<WorkoutExercisesEntity> workoutExercises = service.findByWorkoutPlanId(id);
-        List<WorkoutExercisesResponse> response = workoutExercises.stream().map(entity -> {
-            ExerciseResponse exerciseResponse = exerciseApiService.getExerciseById(entity.getExerciceId());
-            return new WorkoutExercisesResponse(
-                    entity.getId(),
-                    exerciseResponse,
-                    entity.getWorkoutPlan().getId()
-            );
-        }).toList();
-        return ResponseEntity.ok(response);
+
+        List<WorkoutExercisesResponse> allResponses = workoutExercises.stream()
+                .map(entity -> {
+                    ExerciseResponse exerciseResponse = exerciseApiService.getExerciseById(entity.getExerciceId());
+                    if (exerciseResponse == null) return null;
+
+                    ExerciseResponse exercise = new ExerciseResponse(
+                            exerciseResponse.exerciseId(),
+                            exerciseResponse.name(),
+                            exerciseResponse.gifUrl(),
+                            exerciseResponse.instructions(),
+                            exerciseResponse.targetMuscles(),
+                            exerciseResponse.bodyParts(),
+                            exerciseResponse.equipments(),
+                            exerciseResponse.secondaryMuscles()
+                    );
+
+                    return new WorkoutExercisesResponse(
+                            entity.getId(),
+                            exercise,
+                            entity.getWorkoutPlan().getId()
+                    );
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        if (allResponses.isEmpty()) {
+            size = 1;
+            page = 0;
+            return ResponseEntity.ok(new PageImpl<>(new ArrayList<>(), PageRequest.of(page, size), 0));
+        }
+
+        int total = allResponses.size();
+
+        if (size <= 0) size = total;
+        if (page < 0) page = 0;
+
+        int fromIndex = Math.min(page * size, total);
+        int toIndex = Math.min(fromIndex + size, total);
+
+        List<WorkoutExercisesResponse> paginatedResponses = allResponses.subList(fromIndex, toIndex);
+
+        Page<WorkoutExercisesResponse> pageResult = new PageImpl<>(
+                paginatedResponses,
+                PageRequest.of(page, size),
+                total
+        );
+
+        return ResponseEntity.ok(pageResult);
     }
+
 
     @Override
     public ResponseEntity<Void> deleteWorkoutExercises(Long id) {
