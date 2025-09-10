@@ -99,6 +99,23 @@ public class MealItemService {
          repository.deleteById(id);
     }
 
+    public List<MealItemEntity> getMealItemByMealId(Long id) {
+         Optional<MealEntity> meal = this.getMeals(id);
+         if(meal.isEmpty()) throw  new NotFoundException("NOT_FOUND", "Refeição não encontrada");
+        return repository.findByMeal_Id(id);
+    }
+
+    public Page<MealItemEntity> getAllPageOfMealItemsByMealId(Long id, int page, int size) {
+        Optional<MealEntity> meal = this.getMeals(id);
+        if(meal.isEmpty()) throw  new NotFoundException("NOT_FOUND", "Refeição não encontrada");
+
+        Page<MealItemEntity> mealItems = repository.findByMeal_Id(id, PageRequest.of(page, size));
+        if (mealItems.isEmpty()) {
+            throw new NotFoundException("NOT_FOUND", "Nenhum item de refeição encontrado para o ID: " + id);
+        }
+        return mealItems;
+    }
+
     private Optional<MealEntity> getMeals(Long id) { return mealsRepository.findById(id);}
     private Optional<FoodEntity> getFood(Long id) { return foodRepository.findById(id);}
 
@@ -106,4 +123,5 @@ public class MealItemService {
     public Page<MealItemEntity> getAllMealItemsByPage(int page, int size) {
         return repository.findAll(PageRequest.of(page, size));
     }
+
 }

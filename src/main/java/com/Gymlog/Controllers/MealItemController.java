@@ -46,6 +46,18 @@ public class MealItemController implements MealItemControllerInterface {
     }
 
     @Override
+    public ResponseEntity<Page<MealItemResponse>> getMealItemByMealId(Long id, int page, int size) {
+        if(page >= 0 && size > 0) {
+            Page<MealItemEntity> mealItems = service.getAllPageOfMealItemsByMealId(id,page, size);
+            Page<MealItemResponse> mealItemResponseStream = mealItems.map(MealItemMapper::toResponse);
+            return ResponseEntity.ok().body(mealItemResponseStream);
+        }
+        List<MealItemEntity> mealItems = service.getMealItemByMealId(id);
+        Stream<MealItemResponse> mealItemResponseStream = mealItems.stream().map(MealItemMapper::toResponse);
+        return ResponseEntity.ok(new PageImpl<>(mealItemResponseStream.toList(), PageRequest.of(0,mealItems.size() > 0 ? mealItems.size() : 1),mealItems.size() > 0 ? mealItems.size() : 1));    }
+
+
+    @Override
     public ResponseEntity<MealItemResponse> updateMealItem(MealItemRequest mealItemRequest, Long id) {
         Optional<MealItemEntity> mealItem = service.updateMealItem(mealItemRequest, id);
         return mealItem.map(MealItemMapper::toResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());

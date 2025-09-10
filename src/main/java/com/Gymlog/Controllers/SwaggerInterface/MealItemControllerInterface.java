@@ -48,6 +48,25 @@ public interface MealItemControllerInterface {
     );
 
     @Operation(
+            summary = "Buscar item de refeição por ID da Refeição ",
+            description = "Retorna os dados de um item de refeição específico com base no ID informado."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Item de refeição encontrado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = MealItemResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Item de refeição não encontrado",
+                    content = @Content)
+    })
+    @GetMapping("/{id}/meal")
+    ResponseEntity<Page<MealItemResponse>> getMealItemByMealId(
+            @Parameter(description = "ID da  refeição", example = "1")
+            @PathVariable Long id,
+            @Parameter(description = "Número da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
+    @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size
+    );
+
+    @Operation(
             summary = "Atualizar item de refeição",
             description = "Atualiza os dados de um item de refeição existente no sistema."
     )
