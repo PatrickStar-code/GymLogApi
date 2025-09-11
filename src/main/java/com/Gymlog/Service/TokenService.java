@@ -10,15 +10,11 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
 
 @Service
 
@@ -80,8 +76,28 @@ public class TokenService {
 
 
 
+
+
     private Instant expirationDate(Integer i) {
         return LocalDateTime.now().plusMinutes(i).toInstant(ZoneOffset.of("-03:00"));
     }
 
+    public String getUserEmailByToken(String token) {
+        try {
+            DecodedJWT decodedJWT;
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer(issuer)
+                    .build();
+            System.out.printf("Token: %s", token);
+            System.out.printf("Verifier %s", verifier);
+            decodedJWT = verifier.verify(token);
+            System.out.printf("DecodedJWT: %s", decodedJWT.getSubject());
+            return decodedJWT.getSubject();
+
+        }
+        catch (Exception e){
+            throw new InvalidTokenException("INVALID_TOKEN", "Token invalido!");
+        }
+    }
 }

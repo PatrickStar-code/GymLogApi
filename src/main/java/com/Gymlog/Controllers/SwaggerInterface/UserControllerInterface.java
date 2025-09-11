@@ -21,6 +21,21 @@ import java.util.List;
 
 @Tag(name = "Usuário", description = "Operações relacionadas aos usuários")
 public interface UserControllerInterface {
+    @Operation(
+            summary = "Buscar Pelo Bearer Code",
+            description = "Retorna os dados do Usuario a partir do Bearer Token"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário encontrado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
+                    content = @Content)
+    })
+    @GetMapping("/me")
+    ResponseEntity<UserResponse> getUserByBearerToken();
+
+
 
     @Operation(
             summary = "Buscar usuário por ID",

@@ -4,8 +4,6 @@ import com.Gymlog.Controllers.Request.UpdatePassword;
 import com.Gymlog.Controllers.Request.UpdateRequest;
 import com.Gymlog.Controllers.Request.UserRequest;
 import com.Gymlog.Entity.UserEntity;
-import com.Gymlog.Entity.WorkoutPlanEntity;
-import com.Gymlog.Exceptions.BussinesRuleException;
 import com.Gymlog.Exceptions.EmailExistException;
 import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Exceptions.PasswordConfirmIncorrectException;
@@ -14,12 +12,13 @@ import com.Gymlog.Validator.UserValidator;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +32,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder encriptador;
     private  final EmailService emailService;
+    private final TokenService tokenService;
 
 
     @Override
@@ -128,6 +128,13 @@ public class UserService implements UserDetailsService {
 
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public UserEntity getUserByBearerToken() {
+        String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
+        token = token.replace("Bearer ", "");
+        String email = tokenService.getUserEmailByToken(token);
+        return userRepository.findByEmailIgnoreCase(email).orElseThrow(() -> new NotFoundException("NOT_FOUND", "Usuário nao encontrado!"));
     }
 }
 
