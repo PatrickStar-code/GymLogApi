@@ -1,5 +1,6 @@
 package com.Gymlog.Service;
 
+import com.Gymlog.Controllers.Mapper.WorkoutSetsMapper;
 import com.Gymlog.Controllers.Request.WorkoutSetsRequest;
 import com.Gymlog.Controllers.Response.WorkoutSetsResponse;
 import com.Gymlog.Entity.WorkoutExercisesEntity;
@@ -7,7 +8,11 @@ import com.Gymlog.Entity.WorkoutPlanEntity;
 import com.Gymlog.Entity.WorkoutSetsEntity;
 import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Repository.WorkoutSetsRepository;
+import com.Gymlog.Validator.WorkoutSetsValidator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,25 +29,32 @@ public class WorkoutSetsService {
         return repository.findAll();
     }
 
-    public Optional<WorkoutSetsEntity> getWorkoutSetsById(Long id) {
-        Optional<WorkoutSetsEntity> workoutSetsEntity = repository.findById(id);
-        if(workoutSetsEntity.isPresent()) return Optional.of(workoutSetsEntity.get());
-        return Optional.empty();
+    public Page<WorkoutSetsEntity> getAllWorkoutSetsByPage(int page, int size) {
+        return repository.findAll(PageRequest.of(page, size));
     }
 
+    public WorkoutSetsEntity getWorkoutSetsById(Long id) {
+        WorkoutSetsEntity  workoutSetsEntity = repository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND", "WorkoutSets nao encontrado!"));
+        return workoutSetsEntity;
+    }
+
+    @Transactional
     public void deleteWorkoutSets(Long id) {
+        repository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND", "WorkoutSets nao encontrado!"));
+
         repository.deleteById(id);
     }
 
-    public List<WorkoutSetsEntity> findByWorkoutExercicesId(Long id) {
-        Optional<WorkoutExercisesEntity> result = workoutExercisesService.findById(id);
-        if(result.isPresent()) return repository.findByWorkoutExercisesId(result.get().getId());
-        throw new NotFoundException("NOT_FOUND", "WorkoutExercises nao encontrado!");
-    }
 
+
+    @Transactional
     public Optional<WorkoutSetsEntity> updateWorkoutSets(WorkoutSetsRequest workoutSetsRequest, Long id) {
         Optional<WorkoutSetsEntity> result = repository.findById(id);
         if(result.isPresent()) {
+
+            WorkoutSetsValidator.validateWorkoutSets(WorkoutSetsMapper.toWorkoutSetsEntity(workoutSetsRequest));
+            WorkoutExercisesEntity workoutExercisesEntity = workoutExercisesService.findById(workoutSetsRequest.workoutExercicesId()).orElseThrow(() -> new NotFoundException("NOT_FOUND", "WorkoutExercises nao encontrado!"));
+
             result.get().setSets(workoutSetsRequest.sets());
             result.get().setReps(workoutSetsRequest.reps());
             result.get().setWeight(workoutSetsRequest.weight());
@@ -52,17 +64,20 @@ public class WorkoutSetsService {
         return Optional.empty();
     }
 
-    public Optional<WorkoutSetsEntity> createWorkoutSets(WorkoutSetsRequest workoutSetsRequest) {
-        Optional<WorkoutExercisesEntity> result = workoutExercisesService.findById(workoutSetsRequest.workoutExercicesId());
-        if(result.isPresent()) {
+    @Transactional
+    public WorkoutSetsEntity createWorkoutSets(WorkoutSetsRequest workoutSetsRequest) {
+        WorkoutExercisesEntity result = workoutExercisesService.findById(workoutSetsRequest.workoutExercicesId()).orElseThrow(() -> new NotFoundException("NOT_FOUND", "WorkoutExercises nao encontrado!"));
+
+        WorkoutSetsValidator.validateWorkoutSets(WorkoutSetsMapper.toWorkoutSetsEntity(workoutSetsRequest));
+
             WorkoutSetsEntity entity = WorkoutSetsEntity.builder()
                     .sets(workoutSetsRequest.sets())
                     .reps(workoutSetsRequest.reps())
                     .weight(workoutSetsRequest.weight())
-                    .workoutExercises(result.get())
+                    .workoutExercises(result)
                     .build();
-            return Optional.of(repository.save(entity));
+
+            return repository.save(entity);
         }
-        return Optional.empty();
     }
-}
+

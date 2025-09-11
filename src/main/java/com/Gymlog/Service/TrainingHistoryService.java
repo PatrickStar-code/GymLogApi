@@ -3,6 +3,8 @@ package com.Gymlog.Service;
 import com.Gymlog.Controllers.Mapper.TrainingHistoryMapper;
 import com.Gymlog.Controllers.Request.TrainingHistoryRequest;
 import com.Gymlog.Entity.TrainingHistoryEntity;
+import com.Gymlog.Entity.UserEntity;
+import com.Gymlog.Entity.WorkoutPlanEntity;
 import com.Gymlog.Enums.StatusEnum;
 import com.Gymlog.Exceptions.NotFoundException;
 import com.Gymlog.Repository.TrainingHistoryRepopistory;
@@ -53,6 +55,9 @@ public class  TrainingHistoryService {
         }
 
 
+        if(workoutPlan.getUser().getUserId() != user.getUserId()){
+            throw new IllegalArgumentException("User id does not match");
+        }
 
         return trainingHistoryRepository.save(TrainingHistoryMapper.toTrainingHistoryEntity(trainingHistory, user, workoutPlan));
     }
@@ -80,14 +85,21 @@ public class  TrainingHistoryService {
 
         if(!trainingHistoryEntity.isEmpty()) {
             TrainingHistoryEntity trainingHistoryEntity1 = trainingHistoryEntity.get();
-            trainingHistoryEntity1.setWorkoutPlanEntity(workoutPlanService.findById(trainingHistoryRequest.workoutPlanId()).orElseThrow(()-> new NotFoundException("NOT_FOUND", "Workout plan not found")));
-            trainingHistoryEntity1.setUserEntity(userRepository.findById(trainingHistoryRequest.userId()).orElseThrow(()-> new NotFoundException("NOT_FOUND", "User not found")));
+            WorkoutPlanEntity workoutPlanEntity = workoutPlanService.findById(trainingHistoryRequest.workoutPlanId()).orElseThrow(()-> new NotFoundException("NOT_FOUND", "Workout plan not found"));
+            trainingHistoryEntity1.setWorkoutPlanEntity(workoutPlanEntity);
+            UserEntity user = userRepository.findById(trainingHistoryRequest.userId()).orElseThrow(()-> new NotFoundException("NOT_FOUND", "User not found"));
+            trainingHistoryEntity1.setUserEntity(user);
             trainingHistoryEntity1.setComment(trainingHistoryRequest.comment());
             trainingHistoryEntity1.setOcurrenceDate(trainingHistoryRequest.ocurrenceDate());
 
             if(StatusEnum.valueOf( trainingHistoryRequest.statusEnum().name()) == null) {
                 throw new IllegalArgumentException("Status not exists is not valid");
             }
+
+            if(workoutPlanEntity.getUser().getUserId() != user.getUserId()){
+                throw new IllegalArgumentException("User id does not match");
+            }
+
             trainingHistoryEntity1.setStatus(trainingHistoryRequest.statusEnum());
             return Optional.of(trainingHistoryRepository.save(trainingHistoryEntity1));
         }
@@ -135,8 +147,5 @@ public class  TrainingHistoryService {
         return trainingHistoryEntities;
     }
 
-    public List<TrainingHistoryEntity> getAllTrainingHistoryByMonthAndYear(int month, int year) {
-        List<TrainingHistoryEntity> trainingHistoryEntities = trainingHistoryRepository.findAllByByMonthAndByYear(month, year);
-        return trainingHistoryEntities;
-    }
+
 }

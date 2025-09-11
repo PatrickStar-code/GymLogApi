@@ -72,18 +72,6 @@ public class TrainingHistoryController implements TrainingHistoryInterface {
         return ResponseEntity.ok().body(trainingHistoryResponse);
     }
 
-    @Override
-    public ResponseEntity<Page<TrainingHistoryResponse>> getTrainingHistoryByMonthAndYear(Long userId, int month, int year, int page, int size) {
-        if(page>=0 && size>0) {
-            Page<TrainingHistoryEntity> trainingHistory = trainingHistoryService.getAllTrainingHistoryByMonthAndYearPage(page, size, month, year, userId);
-            Page<TrainingHistoryResponse> trainingHistoryResponse = trainingHistory.map(TrainingHistoryMapper::toTrainingHistoryResponse);
-            return ResponseEntity.ok().body(trainingHistoryResponse);
-        }
-        List<TrainingHistoryEntity> trainingHistoryEntity = trainingHistoryService.getAllTrainingHistoryByMonthAndYear(month, year);
-        Stream<TrainingHistoryResponse> trainingHistoryResponse = trainingHistoryEntity.stream().map(TrainingHistoryMapper::toTrainingHistoryResponse);
-        PageImpl<TrainingHistoryResponse> trainingHistoryResponsePage = new PageImpl<>(trainingHistoryResponse.toList());
-        return ResponseEntity.ok().body(trainingHistoryResponsePage);
-    }
 
 
     @Override

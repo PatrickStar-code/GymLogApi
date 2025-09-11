@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -26,7 +27,10 @@ public interface WorkoutSetsControllerInterface {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = WorkoutSetsResponse.class)))
     @GetMapping("/")
-    ResponseEntity<List<WorkoutSetsResponse>> getWorkoutSets();
+    ResponseEntity<Page<WorkoutSetsResponse>> getWorkoutSets(
+            @Parameter(description = "Número da página", example = "0") @RequestParam(required = false,defaultValue = "0") int page,
+            @Parameter(description = "Quantidade de itens por página", example = "10") @RequestParam(required = false,defaultValue = "0") int size
+    );
 
     @Operation(
             summary = "Buscar set por ID",
@@ -68,22 +72,7 @@ public interface WorkoutSetsControllerInterface {
                             schema = @Schema(implementation = WorkoutSetsResponse.class))),
             @ApiResponse(responseCode = "404", description = "Exercício não encontrado")
     })
-    @GetMapping("/{id}/workoutExercises")
-    ResponseEntity<List<WorkoutSetsResponse>> getWorkoutSetsByWorkoutExercisesId(
-            @Parameter(description = "ID do exercício de treino", example = "1")
-            @PathVariable Long id
-    );
 
-    @Operation(
-            summary = "Atualizar set de exercício",
-            description = "Atualiza os dados de um set específico com base no ID."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Set atualizado com sucesso",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = WorkoutSetsResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Set não encontrado")
-    })
     @PutMapping("/{id}")
     ResponseEntity<WorkoutSetsResponse> updateWorkoutSets(
             @RequestBody
