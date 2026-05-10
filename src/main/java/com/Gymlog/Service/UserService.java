@@ -1,7 +1,9 @@
 package com.Gymlog.Service;
 
+import com.Gymlog.Controllers.Request.StepUpRequest;
 import com.Gymlog.Controllers.Request.UpdatePassword;
 import com.Gymlog.Controllers.Request.UpdateRequest;
+import com.Gymlog.Controllers.Request.UserRegisterRequest;
 import com.Gymlog.Controllers.Request.UserRequest;
 import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Exceptions.EmailExistException;
@@ -37,22 +39,32 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmailIgnoreCaseAndVerifiedTrue(username)
+        return userRepository.findByEmailIgnoreCase(username)
                 .orElseThrow(() -> new UsernameNotFoundException("O usuário não foi encontrado!"));
     }
 
     @Transactional
-    public UserEntity registerUser(@Valid UserRequest data) {
+    public UserEntity registerUser(@Valid UserRegisterRequest data) {
         if(userRepository.findByEmailIgnoreCase(data.email()).isPresent()){
             throw new EmailExistException("EMAIL_EXIST", "Email ja cadastrado!");
         }
-
         var passwordEncrypted = encriptador.encode(data.password());
         var user = new UserEntity(data, passwordEncrypted);
-        UserValidator.validateUser(user);
 
         emailService.sendEmailVerification(user);
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public Optional<UserEntity> stepUpUser(StepUpRequest stepUpRequest) {
+        UserEntity userEntity = getUserByBearerToken();
+        userEntity.setGender(stepUpRequest.gender());
+        userEntity.setBirthDate(stepUpRequest.birthdate());
+        userEntity.setHeight(stepUpRequest.height());
+        userEntity.setWeight(stepUpRequest.weight());
+        userEntity.setGoal(stepUpRequest.goal());
+        userEntity.setUpdatedAt(LocalDateTime.now());
+        return Optional.of(userRepository.save(userEntity));
     }
 
     @Transactional

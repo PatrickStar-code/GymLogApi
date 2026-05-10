@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/GymLog/Food")
+@RequestMapping("/api/v1/food")
 @RequiredArgsConstructor
 @Tag(
         name = "Food",
@@ -74,7 +74,7 @@ public class FoodController implements FoodControllerInterface {
         FoodEntity savedFood = foodService.save(foodEntity);
         FoodResponse response = FoodMapper.toFoodResponse(savedFood);
 
-        return  ResponseEntity.created(uriBuilder.path("/GymLog/Food/{id}").buildAndExpand(savedFood.getId()).toUri()).body(response);    }
+        return  ResponseEntity.created(uriBuilder.path("/api/v1/food/{id}").buildAndExpand(savedFood.getId()).toUri()).body(response);    }
 
 
     @Override

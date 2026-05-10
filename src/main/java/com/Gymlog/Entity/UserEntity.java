@@ -1,5 +1,6 @@
 package com.Gymlog.Entity;
 
+import com.Gymlog.Controllers.Request.UserRegisterRequest;
 import com.Gymlog.Controllers.Request.UserRequest;
 import com.Gymlog.Enums.ActivyLevel;
 import com.Gymlog.Enums.GenderEnum;
@@ -50,44 +51,44 @@ public class UserEntity implements UserDetails {
     @Column( nullable = false)
     private LocalDateTime createdAt;
 
-    @Column( nullable = false)
+    @Column( nullable = true)
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
-    @Column( nullable = false)
+    @Column( nullable = true)
     private double height;
 
-    @Column( nullable = false)
+    @Column( nullable = true)
     private double weight;
 
-    @Column( nullable = false)
+    @Column( nullable = true)
     private int age;
 
-    @Column( nullable = false)
+    @Column( nullable = true)
     @Enumerated(EnumType.STRING)
     private RolesEnum role;
 
-    @Column( nullable = false)
+    @Column( nullable = true)
     @Enumerated(EnumType.STRING)
     private Goal goal;
 
-    @Column( nullable = false)
+    @Column( nullable = true)
     private double goalWeight;
 
-    @Column( nullable = false)
+    @Column( nullable = true)
     private  LocalDateTime birthDate;
 
-    @Column( nullable = false)
+    @Column( nullable = true)
     @Enumerated(EnumType.STRING)
     private ActivyLevel activyLevel;
 
-    @Column(name = "avatar_url" , nullable = false)
+    @Column(name = "avatar_url" , nullable = true)
     private String avatarUrl;
 
-    @Column( name = "is_active" , nullable = false)
+    @Column( name = "is_active" , nullable = true)
     private boolean isActive;
 
-    @Column( name = "updated_at" )
+    @Column( name = "updated_at")
     private LocalDateTime updatedAt;
 
     @Column( name = "deleted_at" )
@@ -113,26 +114,26 @@ public class UserEntity implements UserDetails {
 
 
 
-    public UserEntity(@Valid UserRequest dados, String passwordEncrypted) {
+    public UserEntity(@Valid UserRegisterRequest dados, String passwordEncrypted) {
         this.username = dados.username();
         this.email = dados.email();
         this.password = passwordEncrypted;
         this.createdAt = LocalDateTime.now();
-        this.gender = dados.gender();
-        this.height = dados.height();
-        this.weight = dados.weight();
-        this.age = dados.age();
-        this.goal = dados.goal();
-        this.goalWeight = dados.goalWeight();
-        this.birthDate = dados.birthDate();
-        this.activyLevel = dados.activyLevel();
-        this.avatarUrl = dados.avatarUrl();
+        this.gender = null;
+        this.height = 0.0;
+        this.weight = 0.0;
+        this.age = 0;
+        this.goal = null;
+        this.goalWeight = 0.0;
+        this.birthDate = null;
+        this.activyLevel = null;
+        this.avatarUrl = null;
         this.isActive = true;
         this.updatedAt = null;
         this.deletedAt = null;
         this.verified = false;
         this.verificationToken = UUID.randomUUID().toString();
-        this.role = dados.role() == null ? RolesEnum.USER : RolesEnum.valueOf(dados.role());
+        this.role = RolesEnum.USER;
         this.tokenExpirationDate = LocalDateTime.now().plusMinutes(30);
     }
 
@@ -175,6 +176,14 @@ public class UserEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return isActive;
+    }
+
+    public boolean isProfileComplete() {
+        return gender != null
+                && birthDate != null
+                && goal != null
+                && height > 0
+                && weight > 0;
     }
 
     public void verify() {

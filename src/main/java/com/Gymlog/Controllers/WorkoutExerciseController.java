@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/GymLog/workoutExercise")
+@RequestMapping("/api/v1/workout-exercises")
 @RequiredArgsConstructor
 public class WorkoutExerciseController implements WorkoutExercisesControllerInterface {
 
@@ -166,7 +166,7 @@ public class WorkoutExerciseController implements WorkoutExercisesControllerInte
         Optional<WorkoutExercisesEntity> workoutExercises = service.createWorkoutExercises(workoutExercicesRequest);
         if(workoutExercises.isPresent()) {
             ExerciseResponse exerciseResponse = exerciseApiService.getExerciseById(workoutExercises.get().getExerciceId());
-            var uri = uriBuilder.path("/GymLog/workoutExercise/{id}").buildAndExpand(workoutExercises.get().getId()).toUri();
+            var uri = uriBuilder.path("/api/v1/workout-exercises/{id}").buildAndExpand(workoutExercises.get().getId()).toUri();
             return ResponseEntity.created(uri).body(WorkoutExercicesMapper.toWorkoutExercisesResponse(workoutExercises.get(), exerciseResponse));
         }
         return ResponseEntity.notFound().build();

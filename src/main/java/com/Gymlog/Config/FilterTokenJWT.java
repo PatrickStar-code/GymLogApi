@@ -28,18 +28,20 @@ public class FilterTokenJWT extends OncePerRequestFilter {
     private final ObjectMapper objectMapper = new ObjectMapper(); // para serializar JSON
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri.startsWith("/api/v1/auth/")
+                || uri.equals("/api/v1/users/register")
+                || uri.equals("/api/v1/users/verify-user")
+                || uri.startsWith("/api/api-docs")
+                || uri.startsWith("/swagger");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
-            String uri = request.getRequestURI();
-            if (uri.equals("/login") || uri.equals("/refresh-token")
-                    || uri.equals("/GymLog/users/register")
-                    || uri.equals("/GymLog/users/verify-user")) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
             String token = getTokenRequisition(request);
 
             if (token == null) {
@@ -88,3 +90,4 @@ public class FilterTokenJWT extends OncePerRequestFilter {
         objectMapper.writeValue(response.getWriter(), body);
     }
 }
+

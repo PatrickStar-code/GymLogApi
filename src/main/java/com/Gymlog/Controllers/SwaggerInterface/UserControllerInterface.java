@@ -1,8 +1,9 @@
 package com.Gymlog.Controllers.SwaggerInterface;
 
+import com.Gymlog.Controllers.Request.StepUpRequest;
 import com.Gymlog.Controllers.Request.UpdatePassword;
 import com.Gymlog.Controllers.Request.UpdateRequest;
-import com.Gymlog.Controllers.Request.UserRequest;
+import com.Gymlog.Controllers.Request.UserRegisterRequest;
 import com.Gymlog.Controllers.Response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -81,8 +82,26 @@ public interface UserControllerInterface {
     ResponseEntity<UserResponse> registerUser(
             @RequestBody @Valid
             @Parameter(description = "Dados para criação do usuário")
-            UserRequest userRequest,
+            UserRegisterRequest userRequest,
             @NotNull UriComponentsBuilder uriBuilder
+    );
+
+    @Operation(
+            summary = "Finalizar perfil do usuário",
+            description = "Preenche os dados adicionais do usuário (Step-up)."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Perfil atualizado",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
+                    content = @Content)
+    })
+    @PutMapping("/me/step-up")
+    ResponseEntity<UserResponse> stepUp(
+            @RequestBody @Valid
+            @Parameter(description = "Dados para finalização do perfil")
+            StepUpRequest stepUpRequest
     );
 
     @Operation(

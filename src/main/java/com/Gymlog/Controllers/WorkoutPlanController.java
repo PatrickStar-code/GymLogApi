@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/GymLog/workoutPlan")
+@RequestMapping("/api/v1/workout-plans")
 @RequiredArgsConstructor
 public class WorkoutPlanController implements WorkoutPlanControllerInterface {
 
@@ -74,7 +74,7 @@ public class WorkoutPlanController implements WorkoutPlanControllerInterface {
     public ResponseEntity<WorkoutPlanResponse> createWorkoutPlan(WorkoutPlanRequest workoutPlanRequest, UriComponentsBuilder uriBuilder) {
         WorkoutPlanEntity workoutPlanEntity = service.createWorkoutPlan(workoutPlanRequest);
         WorkoutPlanResponse workoutPlanResponse = WorkoutPlanMapper.toWorkoutPlanResponse(workoutPlanEntity);
-        var uri = uriBuilder.path("/GymLog/workoutPlan/{id}").buildAndExpand(workoutPlanResponse.id()).toUri();
+        var uri = uriBuilder.path("/api/v1/workout-plans/{id}").buildAndExpand(workoutPlanResponse.id()).toUri();
         return ResponseEntity.created(uri).body(workoutPlanResponse);
     }
 

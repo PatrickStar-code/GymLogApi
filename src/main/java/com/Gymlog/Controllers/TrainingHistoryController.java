@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 @Controller
 @RestController
-@RequestMapping("/GymLog/trainingHistory")
+@RequestMapping("/api/v1/training-history")
 @RequiredArgsConstructor
 public class TrainingHistoryController implements TrainingHistoryInterface {
 
@@ -31,7 +31,7 @@ public class TrainingHistoryController implements TrainingHistoryInterface {
     public ResponseEntity<TrainingHistoryResponse> saveTrainingHistory(TrainingHistoryRequest trainingHistory, UriComponentsBuilder uriBuilder) {
         TrainingHistoryEntity trainingHistoryEntity = trainingHistoryService.saveTrainingHistory(trainingHistory);
         TrainingHistoryResponse trainingHistoryResponse = TrainingHistoryMapper.toTrainingHistoryResponse(trainingHistoryEntity);
-        return ResponseEntity.created(uriBuilder.path("/Gymlog/trainingHistory/{id}").buildAndExpand(trainingHistoryResponse.id()).toUri()).body(trainingHistoryResponse);
+        return ResponseEntity.created(uriBuilder.path("/api/v1/training-history/{id}").buildAndExpand(trainingHistoryResponse.id()).toUri()).body(trainingHistoryResponse);
     }
 
     @Override

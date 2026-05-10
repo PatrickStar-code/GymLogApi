@@ -1,9 +1,10 @@
 package com.Gymlog.Controllers;
 
 import com.Gymlog.Controllers.Mapper.UserMapper;
+import com.Gymlog.Controllers.Request.StepUpRequest;
 import com.Gymlog.Controllers.Request.UpdatePassword;
 import com.Gymlog.Controllers.Request.UpdateRequest;
-import com.Gymlog.Controllers.Request.UserRequest;
+import com.Gymlog.Controllers.Request.UserRegisterRequest;
 import com.Gymlog.Controllers.Response.UserResponse;
 import com.Gymlog.Entity.UserEntity;
 import com.Gymlog.Service.UserService;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("GymLog/users")
+@RequestMapping("/api/v1/users")
 @Tag(name = "User"
     , description = "User endpoints")
 @SecurityRequirement(name = "bearerAuth")
@@ -29,10 +30,16 @@ public class UserController implements UserControllerInterface {
     private final UserService userService;
 
     @Override
-    public ResponseEntity<UserResponse> registerUser(UserRequest userRequest, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<UserResponse> registerUser(UserRegisterRequest userRequest, UriComponentsBuilder uriBuilder) {
         UserEntity usuario = userService.registerUser(userRequest);
         var uri = uriBuilder.path("/{id}").buildAndExpand(usuario.getUserId()).toUri();
         return ResponseEntity.created(uri).body(UserMapper.toUserResponse(usuario));
+    }
+
+    @Override
+    public ResponseEntity<UserResponse> stepUp(StepUpRequest stepUpRequest) {
+        Optional<UserEntity> user = userService.stepUpUser(stepUpRequest);
+        return user.map(UserMapper::toUserResponse).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 

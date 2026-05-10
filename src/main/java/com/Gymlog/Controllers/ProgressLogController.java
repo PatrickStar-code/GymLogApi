@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/GymLog/progresslog")
+@RequestMapping("/api/v1/progress-logs")
 @RequiredArgsConstructor
 public class ProgressLogController implements ProgressLogControllerInterface {
 
@@ -38,7 +38,7 @@ public class ProgressLogController implements ProgressLogControllerInterface {
         ProgressLogEntity response = progressLogService.createProgressLog(progressLogRequest);
         ProgressLogValidador.verifyErrorsProgressLog(response);
         ProgressLogResponse progressLogResponse = ProgressLogMapper.toProgressLogResponse(response);
-        return ResponseEntity.created(uriBuilder.path("/GymLog/progresslog/{id}").buildAndExpand(response.getId()).toUri()).body(progressLogResponse);
+        return ResponseEntity.created(uriBuilder.path("/api/v1/progress-logs/{id}").buildAndExpand(response.getId()).toUri()).body(progressLogResponse);
     }
 
     @Override

@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/GymLog/mealItem")
+@RequestMapping("/api/v1/meal-items")
 @RequiredArgsConstructor
 public class MealItemController implements MealItemControllerInterface {
 

@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/GymLog/workoutSets")
+@RequestMapping("/api/v1/workout-sets")
 @RequiredArgsConstructor
 public class WorkoutSetsController implements WorkoutSetsControllerInterface {
     private final WorkoutSetsService service;
